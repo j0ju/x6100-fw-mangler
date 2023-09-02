@@ -22,10 +22,11 @@ COPY img-mangler/cleanup-rootfs.sh /lib/cleanup-rootfs.sh
 
 RUN set -e; \
     mkdir -p /target; \
+    sed -i -e '/Components/ s/main/main non-free contrib/' /etc/apt/sources.list.d/debian.sources; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
       debootstrap e2fsprogs btrfs-progs f2fs-tools gdisk unzip kpartx mc zstd file pixz xzip cpio pigz git dosfstools \
-      vim-nox bash-completion initramfs-tools build-essential \
+      vim-nox bash-completion initramfs-tools build-essential unrar unzip \
       ; \
     apt-get clean; \
     sh /lib/cleanup-rootfs.sh

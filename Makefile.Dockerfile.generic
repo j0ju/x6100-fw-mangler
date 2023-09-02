@@ -146,7 +146,7 @@ $(DEPDIR)/%.built: %.Dockerfile.sh
 		date > $@; \
     docker image ls $(NAME_PFX)$(NAME):$(<:.Dockerfile.sh=) >> $@
 
-%: %.url
+%: %.url .deps/img-mangler.built
 	$(E) "WGET $@ URL: $$(cut -f 1 -d ' ' $<)"
 	$(Q) set $(SHOPT); exec $(SHREDIR); \
 		read URL CKSUM < $<; \
