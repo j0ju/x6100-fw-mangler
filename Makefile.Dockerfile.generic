@@ -39,7 +39,7 @@ ifeq ($(V), 0)
 	E = $(Q)echo
 	SHREDIR = > /dev/null
 	SHOPT = -e
-	#WGETOPT = -q
+	WGETOPT = -q
 endif
 
 all: build
@@ -151,38 +151,9 @@ $(DEPDIR)/%.built: %.Dockerfile.sh
 	$(Q) set $(SHOPT); exec $(SHREDIR); \
 		read URL CKSUM < $<; \
 		wget $(WGETOPT) -c -O "$@" "$$URL"; \
-		case "$$CKSUM" in \
-			"" ) \
-				echo "W: no checksum for '$@' defined, ignoring" >&2; \
-				;; \
-			sha1:* ) \
-				CKSUM="$${CKSUM#sha1:}" ; \
-				if [ -n "$$CKSUM" ]; then \
-					echo "$$CKSUM $@" > $(DEPDIR)/$@.sha1sum ; \
-					if ! sha1sum -c $(DEPDIR)/$@.sha1sum >&2; then \
-						echo "It was SHA1 $$(sha1sum $@)" >&2; \
-						echo "It should have been SHA1 $$CKSUM" >&2; \
-						exit 1; \
-					fi; \
-				fi; \
-				;; \
-			sha256:* ) \
-				CKSUM="$${CKSUM#sha256:}" ; \
-				if [ -n "$$CKSUM" ]; then \
-					echo "$$CKSUM $@" > $(DEPDIR)/$@.sha256sum ; \
-					if ! sha256sum -c $(DEPDIR)/$@.sha256sum >&2; then \
-						echo "It was SHA256 $$(sha256sum $@)" >&2; \
-						echo "It should have been SHA256 $$CKSUM" >&2; \
-						exit 1; \
-					fi; \
-				fi; \
-				touch "$@" \
-				;; \
-			* ) \
-				echo "E: unknowwn checksum field in '$<', ABORT" >&2 ; \
-				exit 1 \
-				;; \
-		esac; \
+		if ! . ./img-mangler/chksum.sh "$@" "$$CKSUM" >&2 ; then \
+		  : rm -f "$@" ; \
+		fi; \
 		touch "$@" \
 
 $(DEPDIR)/%.pushed: $(DEPDIR)/%.built

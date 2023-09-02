@@ -13,6 +13,7 @@ config
 *.tar.zst
 *.tar.zstd
 *.7z
+*.rar
 *.initrd
 *.initrd.gz
 *.initrd.xz
