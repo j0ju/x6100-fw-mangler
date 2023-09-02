@@ -1,0 +1,209 @@
+# - Makefile -
+
+NAME = $(shell basename "$$PWD" )
+NAME_PFX =
+REGISTRY =
+
+DEPDIR              = .deps
+$(shell mkdir -p $(DEPDIR) >/dev/null)
+
+DOCKER_FILES := $(shell ls -1 *.Dockerfile 2>/dev/null )
+DOCKER_FILES_SH := $(shell ls -1 *.Dockerfile.sh 2>/dev/null )
+
+DOCKER_IMAGES := $(DOCKER_FILES:.Dockerfile=) $(DOCKER_FILES_SH:.Dockerfile.sh=)
+DOCKER_IMAGES_FLAGS := $(DOCKER_IMAGES:%=$(DEPDIR)/%.built)
+DOCKER_IMAGES_DEPS := $(DOCKER_IMAGES:%=$(DEPDIR)/%.d)
+
+DOCKER_IMAGES_PUSH := $(filter-out $(DOCKER_IMAGES_PUSH_IGNORE),$(DOCKER_IMAGES))
+DOCKER_IMAGES_PUSH_FLAGS := $(DOCKER_IMAGES_PUSH:%=$(DEPDIR)/%.pushed)
+
+URLS := $(shell ls -1 *.url 2>/dev/null )
+URL_FILES := $(URLS:.url=)
+URL_DEPS := $(URL_FILES:%=$(DEPDIR)/%.d)
+
+# include config if exists
+-include ../config.Makefile.Dockerfile.generic
+
+WORK_FILES :=
+
+VER = $(shell echo "$$(git show -s --format=%cI HEAD | grep -o ^....-..-..T..:.. | tr -d ':-' | tr 'T' '-')$$(git stat | grep ^ > /dev/null && echo -dirty)" )
+
+V = 0
+E = @ :
+Q =
+SHOPT = -e -x
+SHREDIR =
+WGETOPT =
+ifeq ($(V), 0)
+	Q = @
+	E = $(Q)echo
+	SHREDIR = > /dev/null
+	SHOPT = -e
+	#WGETOPT = -q
+endif
+
+all: build
+
+build: dep
+	$(E) BUILD
+	$(Q) set $(SHOPT); [ -z "$(DOCKER_IMAGES)" ] || $(MAKE) $(DOCKER_IMAGES)
+	$(Q) $(MAKE) docker-image-prune
+
+force-build:
+	$(E) FORCE BUILD
+	$(Q) rm -f .deps/*.built
+	$(Q) $(MAKE) build
+
+push:
+	$(Q) $(MAKE) $(DOCKER_IMAGES_PUSH_FLAGS)
+
+depend deps dep: $(DOCKER_IMAGES_DEPS)
+
+clean: clean-files docker-image-prune
+mrproper: clean-files docker-image-clean docker-image-prune
+	$(E) MRPROPER
+	$(Q) rm -rf $(DEPDIR) $(WORK_FILES) $(URL_FILES)
+
+clean-files:
+	$(E) CLEAN
+	$(Q) rm -rf $(DEPDIR)/*.d $(DEPDIR)/*.built $(WORK_FILES)
+
+docker-image-clean:
+	$(E) IMAGE CLEAN
+	$(Q) for i in $(DOCKER_IMAGES); do docker image rm $(NAME_PFX)$(NAME):$$i 2> /dev/null || :; done
+
+docker-image-prune:
+	$(E) IMAGE PRUNE
+	$(Q) docker image prune -f > /dev/null
+
+$(DEPDIR)/%.built: %.Dockerfile
+	$(E) IMAGE $(NAME_PFX)$(NAME):$(<:.Dockerfile=) BUILD
+	docker build $(DOCKER_BUILD_OPTS) -t $(NAME_PFX)$(NAME):$(<:.Dockerfile=) -f $< .
+	$(Q) date > $@
+	$(Q) docker image ls $(NAME_PFX)$(NAME):$(<:.Dockerfile=) >> $@
+
+$(DEPDIR)/%.d: %.Dockerfile Makefile
+	$(E) DEP $(NAME_PFX)$(NAME):$(<:.Dockerfile=)
+	$(Q) set $(SHOPT); awk '$$1 == "FROM" { print $$2 }' $< | sed -e 's@^$(NAME_PFX)@@'| ( \
+		while read image; do \
+			if [ -f "$${image##$(NAME):}.Dockerfile" -o -f "$${image##$(NAME):}.Dockerfile.sh" ]; then \
+				echo "$(DEPDIR)/$(<:.Dockerfile=.built): $(DEPDIR)/$${image##$(NAME):}.built"; \
+			fi; \
+		done; \
+		awk '$$1 ~ "^(ADD|COPY)$$" && $$2 !~ "[*?]" {print $$2}' "$<" | grep -v "^[-]-from" | while read f; do \
+				if [ -d "$$f" ]; then \
+					find "$$f" -type f; \
+				else \
+					echo "$$f"; \
+				fi; \
+			done | \
+				xargs echo "$(DEPDIR)/$(<:.Dockerfile=.built): "; \
+		echo "$(<:.Dockerfile=): $(DEPDIR)/$(<:.Dockerfile=).built" ; \
+		echo ".PHONY: $(<:.Dockerfile=)" ; \
+	) > "$@"
+
+# docker file generation versioned
+%.$(VER).Dockerfile: %.Dockerfile
+	$(E) GEN Dockerfile $@
+	$(Q) cat $< > $@
+
+# override build for cloned/version tagged containers
+$(DEPDIR)/%.$(VER).built: $(DEPDIR)/%.built
+	$(Q) \
+		TAG="$<"; \
+		TAG="$${TAG%.built}"; \
+		TAG="$${TAG#$(DEPDIR)/}"; \
+		docker tag $(NAME_PFX)$(NAME):$$TAG $(NAME_PFX)$(NAME):$$TAG.$(VER) ; \
+			date > "$@"
+
+$(DEPDIR)/%.d: %.Dockerfile.sh Makefile
+	$(E) DEP $(NAME_PFX)$(NAME):$(<:.Dockerfile.sh=)
+	$(Q) set $(SHOPT); awk '$$1 == "FROM" { print $$2 }' $< | sed -e 's@^$(NAME_PFX)/@@' | ( \
+		echo "$(DEPDIR)/$(<:.Dockerfile.sh=.built): " $$(sed -n -e 's/^# Depends:// p' "$<"); \
+		echo "$(<:.Dockerfile.sh=): $(DEPDIR)/$(<:.Dockerfile.sh=).built" ; \
+		echo ".PHONY: $(<:.Dockerfile.sh=)" ; \
+	) > "$@"
+
+$(DEPDIR)/%.d: %.url Makefile
+	$(E) DEP $(<:.url=)
+	$(Q) set $(SHOPT); ( \
+		DST="$(<:.url=)"; DEPS="$<"; \
+		while :; do \
+			echo "$$DST: $$DEPS"; \
+			case "$$DST" in \
+				*.tar.gz ) break ;; \
+				*.gz     ) DEPS="$$DST"; DST="$${DST%.*}" ;; \
+				*.img    ) DEPS="$$DST"; DST="$${DST%.*}.tar.gz" ;; \
+				*        ) break ;; \
+			esac; \
+		done; \
+	) > "$@"
+
+$(DEPDIR)/%.built: %.Dockerfile.sh
+	$(E) IMAGE $(NAME_PFX)$(NAME):$(<:.Dockerfile.sh=) BUILD
+	$(Q) set $(SHOPT); exec $(SHREDIR); \
+		sh $(SHOPT) "$<" "$(NAME_PFX)$(NAME):$(<:.Dockerfile.sh=)"; \
+		date > $@; \
+    docker image ls $(NAME_PFX)$(NAME):$(<:.Dockerfile.sh=) >> $@
+
+%: %.url
+	$(E) "WGET $@ URL: $$(cut -f 1 -d ' ' $<)"
+	$(Q) set $(SHOPT); exec $(SHREDIR); \
+		read URL CKSUM < $<; \
+		wget $(WGETOPT) -c -O "$@" "$$URL"; \
+		case "$$CKSUM" in \
+			"" ) \
+				echo "W: no checksum for '$@' defined, ignoring" >&2; \
+				;; \
+			sha1:* ) \
+				CKSUM="$${CKSUM#sha1:}" ; \
+				if [ -n "$$CKSUM" ]; then \
+					echo "$$CKSUM $@" > $(DEPDIR)/$@.sha1sum ; \
+					if ! sha1sum -c $(DEPDIR)/$@.sha1sum >&2; then \
+						echo "It was SHA1 $$(sha1sum $@)" >&2; \
+						echo "It should have been SHA1 $$CKSUM" >&2; \
+						exit 1; \
+					fi; \
+				fi; \
+				;; \
+			sha256:* ) \
+				CKSUM="$${CKSUM#sha256:}" ; \
+				if [ -n "$$CKSUM" ]; then \
+					echo "$$CKSUM $@" > $(DEPDIR)/$@.sha256sum ; \
+					if ! sha256sum -c $(DEPDIR)/$@.sha256sum >&2; then \
+						echo "It was SHA256 $$(sha256sum $@)" >&2; \
+						echo "It should have been SHA256 $$CKSUM" >&2; \
+						exit 1; \
+					fi; \
+				fi; \
+				touch "$@" \
+				;; \
+			* ) \
+				echo "E: unknowwn checksum field in '$<', ABORT" >&2 ; \
+				exit 1 \
+				;; \
+		esac; \
+		touch "$@" \
+
+$(DEPDIR)/%.pushed: $(DEPDIR)/%.built
+	$(Q) set -e; \
+		if [ -z "$(REGISTRY)" ]; then echo "E: no registry set, ABORT" >&2; exit 1; fi; \
+		TAG="$<"; \
+		TAG="$${TAG#$(DEPDIR)/}"; \
+		TAG="$${TAG%.*}"; \
+		echo PUSH $(REGISTRY)/$(NAME):$$TAG; \
+    [ ! "$(NAME_PFX)$(NAME):$$TAG" = "$(REGISTRY)/$(NAME):$$TAG" ] || \
+			docker tag "$(NAME_PFX)$(NAME):$$TAG" "$(REGISTRY)/$(NAME):$$TAG"; \
+		docker push "$(REGISTRY)/$(NAME):$$TAG"; \
+		: > $@
+
+authorized_keys:
+	$(E) GEN authorized_keys
+	$(Q) cp ~/.ssh/$@ $@
+
+include $(DOCKER_IMAGES_DEPS)
+include $(URL_DEPS)
+
+.PHONY: all build depends deps dep mrproper clean clean-files docker-image-clean docker-image-prune
+
+# vim: ts=2 sw=2 noet ft=make
