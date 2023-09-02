@@ -19,12 +19,16 @@ build: $(WORK_FILES)
 
 
 %.update.img: %.update.rar
-	$(E) X $@
-	$(Q) docker run --rm -ti -v "$$PWD:/src" -w /src x6100:img-mangler sh $(SHOPTS) img-mangler/unrar-img.sh $< $@
+	$(E) UNPACK $@
+	$(Q) docker run --rm -ti -v "$$PWD:/src" -w /src x6100:img-mangler sh $(SHOPT) img-mangler/unrar-img.sh $< $@
 
 %.update.img: %.update.zip
-	$(E) X $@
-	$(Q) docker run --rm -ti -v "$$PWD:/src" -w /src x6100:img-mangler sh $(SHOPTS) img-mangler/unzip-img.sh $< $@
+	$(E) UNPACK $@
+	$(Q) docker run --rm -ti -v "$$PWD:/src" -w /src x6100:img-mangler sh $(SHOPT) img-mangler/unzip-img.sh $< $@
+
+%.update.tar: %.update.img
+	$(E) TAR $@
+	$(Q) docker run --privileged --rm -ti -v "$$PWD:/src" -e COMPRESSOR=cat -w /src x6100:img-mangler sh $(SHOPT) img-mangler/update-img-to-tar.sh $< $@
 
 clean:
 	$(E) CLEAN
