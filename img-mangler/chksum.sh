@@ -18,7 +18,7 @@ esac
 CHKSUMFILE=".deps/$FILE.$TYPE"sum
 echo "$CHKSUM $FILE" > "$CHKSUMFILE"
 
-docker run --rm -v $PWD:/src -w /src x6100:img-mangler "$TYPE"sum -c "$CHKSUMFILE" \
+bin/D6100 "$TYPE"sum -c "$CHKSUMFILE" \
   && rs=$? || rs=$?
 
 return $?

@@ -19,19 +19,24 @@ build: $(WORK_FILES)
 
 
 %.update.img: %.update.rar
-	$(E) UNPACK $@
-	$(Q) docker run --rm -ti -v "$$PWD:/src" -w /src x6100:img-mangler sh $(SHOPT) img-mangler/unrar-img.sh $< $@
+	$(E) "UNPACK $@ <-- $<"
+	$(Q) bin/D6100 sh $(SHOPT) img-mangler/unrar-img.sh $< $@
 
 %.update.img: %.update.zip
-	$(E) UNPACK $@
-	$(Q) docker run --rm -ti -v "$$PWD:/src" -w /src x6100:img-mangler sh $(SHOPT) img-mangler/unzip-img.sh $< $@
+	$(E) "UNPACK $@ <--- $<"
+	$(Q) bin/D6100 sh $(SHOPT) img-mangler/unzip-img.sh $< $@
 
 %.update.tar: %.update.img
-	$(E) TAR $@
-	$(Q) docker run --privileged --rm -ti -v "$$PWD:/src" -e COMPRESSOR=cat -w /src x6100:img-mangler sh $(SHOPT) img-mangler/update-img-to-tar.sh $< $@
+	$(E) "TAR $@ <--- $<"
+	$(Q) bin/D6100 -p -e COMPRESSOR=cat sh $(SHOPT) img-mangler/update-img-to-tar.sh $< $@
+
+.deps/%.built: %.tar
+	$(E) "IMAGE $@ <--- $<"
+	$(Q) $(SHELL) img-mangler/tar-import.sh $< $(NAME_PFX)$(NAME):$(<:.tar=)
+
 
 clean:
 	$(E) CLEAN
-	$(Q) rm -f *.zst *.img *.rar *.zip
+	$(Q) rm -f *.zst *.img *.rar *.zip *.tar
 
 # vim: ts=2 sw=2 noet ft=make foldmethod=marker foldmarker=#-,#}

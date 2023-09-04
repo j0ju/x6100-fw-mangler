@@ -1,3 +1,30 @@
 #!/bin/sh
-set -e -x
-exec docker run --privileged --rm -ti -v $PWD:/src -w /src x6100:img-mangler
+set -e
+
+PREFIX="${0%/bin/${0##*/}}"
+DEP_DIR="$PREFIX/.deps"
+BUILT_FLAG="$DEP_DIR/img-mangler.built"
+
+[ -f "$BUILT_FLAG" ] || \
+  make img-mangler
+
+OPTS=
+while [ -n "$1" ]; do # eval until the first unknown argument
+  case "$1" in
+    -p )
+      OPTS="$OPTS --privileged"
+      shift
+      ;;
+    -e )
+      OPTS="$OPTS -e '$2'"
+      shift
+      shift
+      ;;
+    * )
+      break
+      ;;
+  esac
+done
+
+#set -x
+eval "exec docker run --rm -ti -v $PWD:/src -w /src $OPTS x6100:img-mangler \"\$@\""
