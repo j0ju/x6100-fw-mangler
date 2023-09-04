@@ -8,9 +8,7 @@ DEPDIR              = .deps
 $(shell mkdir -p $(DEPDIR) >/dev/null)
 
 DOCKER_FILES := $(shell ls -1 *.Dockerfile 2>/dev/null )
-DOCKER_FILES_SH := $(shell ls -1 *.Dockerfile.sh 2>/dev/null )
-
-DOCKER_IMAGES := $(DOCKER_FILES:.Dockerfile=) $(DOCKER_FILES_SH:.Dockerfile.sh=)
+DOCKER_IMAGES := $(DOCKER_FILES:.Dockerfile=)
 DOCKER_IMAGES_FLAGS := $(DOCKER_IMAGES:%=$(DEPDIR)/%.built)
 DOCKER_IMAGES_DEPS := $(DOCKER_IMAGES:%=$(DEPDIR)/%.d)
 
@@ -78,51 +76,47 @@ docker-image-prune:
 
 $(DEPDIR)/%.built: %.Dockerfile
 	$(E) IMAGE $(NAME_PFX)$(NAME):$(<:.Dockerfile=) BUILD
-	docker build $(DOCKER_BUILD_OPTS) -t $(NAME_PFX)$(NAME):$(<:.Dockerfile=) -f $< .
+	$(Q) docker build $(DOCKER_BUILD_OPTS) -t $(NAME_PFX)$(NAME):$(<:.Dockerfile=) -f $< .
 	$(Q) date > $@
 	$(Q) docker image ls $(NAME_PFX)$(NAME):$(<:.Dockerfile=) >> $@
 
 $(DEPDIR)/%.d: %.Dockerfile Makefile
 	$(E) DEP $(NAME_PFX)$(NAME):$(<:.Dockerfile=)
-	$(Q) set $(SHOPT); awk '$$1 == "FROM" { print $$2 }' $< | sed -e 's@^$(NAME_PFX)@@'| ( \
-		while read image; do \
-			if [ -f "$${image##$(NAME):}.Dockerfile" -o -f "$${image##$(NAME):}.Dockerfile.sh" ]; then \
-				echo "$(DEPDIR)/$(<:.Dockerfile=.built): $(DEPDIR)/$${image##$(NAME):}.built"; \
-			fi; \
-		done; \
-		awk '$$1 ~ "^(ADD|COPY)$$" && $$2 !~ "[*?]" {print $$2}' "$<" | grep -v "^[-]-from" | while read f; do \
-				if [ -d "$$f" ]; then \
-					find "$$f" -type f; \
-				else \
-					echo "$$f"; \
-				fi; \
-			done | \
-				xargs echo "$(DEPDIR)/$(<:.Dockerfile=.built): "; \
-		echo "$(<:.Dockerfile=): $(DEPDIR)/$(<:.Dockerfile=).built" ; \
-		echo ".PHONY: $(<:.Dockerfile=)" ; \
-	) > "$@"
+	$(Q) set $(SHOPT); \
+		awk '$$1 == "FROM" { print $$2 }' $< | ( \
+		  while read image; do \
+			  image_pfx="$${image%%:*}"; \
+			  if [ "$$image_pfx" = "$(NAME_PFX)$(NAME)" ]; then \
+				  echo "$(DEPDIR)/$(<:.Dockerfile=.built): $(DEPDIR)/$${image##$(NAME):}.built"; \
+			  fi; \
+		  done; \
+		  awk '$$1 ~ "^(ADD|COPY)$$" && $$2 !~ "[*?]" {print $$2}' "$<" | \
+			  grep -v "^[-]-from" | \
+				while read f; do \
+				  if [ -d "$$f" ]; then \
+					  find "$$f" -type f; \
+				  else \
+					  echo "$$f"; \
+				  fi; \
+			  done | \
+				  xargs echo "$(DEPDIR)/$(<:.Dockerfile=.built): "; \
+		  echo "$(<:.Dockerfile=): $(DEPDIR)/$(<:.Dockerfile=).built" ; \
+		  echo ".PHONY: $(<:.Dockerfile=)" ; \
+	  ) > "$@"
 
 # docker file generation versioned
-%.$(VER).Dockerfile: %.Dockerfile
+%.$(VER).Dockerfile: %.Dockerfile Makefile
 	$(E) GEN Dockerfile $@
 	$(Q) cat $< > $@
 
 # override build for cloned/version tagged containers
-$(DEPDIR)/%.$(VER).built: $(DEPDIR)/%.built
+$(DEPDIR)/%.$(VER).built: $(DEPDIR)/%.built Makefile
 	$(Q) \
 		TAG="$<"; \
 		TAG="$${TAG%.built}"; \
 		TAG="$${TAG#$(DEPDIR)/}"; \
 		docker tag $(NAME_PFX)$(NAME):$$TAG $(NAME_PFX)$(NAME):$$TAG.$(VER) ; \
 			date > "$@"
-
-$(DEPDIR)/%.d: %.Dockerfile.sh Makefile
-	$(E) DEP $(NAME_PFX)$(NAME):$(<:.Dockerfile.sh=)
-	$(Q) set $(SHOPT); awk '$$1 == "FROM" { print $$2 }' $< | sed -e 's@^$(NAME_PFX)/@@' | ( \
-		echo "$(DEPDIR)/$(<:.Dockerfile.sh=.built): " $$(sed -n -e 's/^# Depends:// p' "$<"); \
-		echo "$(<:.Dockerfile.sh=): $(DEPDIR)/$(<:.Dockerfile.sh=).built" ; \
-		echo ".PHONY: $(<:.Dockerfile.sh=)" ; \
-	) > "$@"
 
 $(DEPDIR)/%.d: %.url Makefile
 	$(E) DEP $(<:.url=)
@@ -138,13 +132,6 @@ $(DEPDIR)/%.d: %.url Makefile
 			esac; \
 		done; \
 	) > "$@"
-
-$(DEPDIR)/%.built: %.Dockerfile.sh
-	$(E) IMAGE $(NAME_PFX)$(NAME):$(<:.Dockerfile.sh=) BUILD
-	$(Q) set $(SHOPT); exec $(SHREDIR); \
-		sh $(SHOPT) "$<" "$(NAME_PFX)$(NAME):$(<:.Dockerfile.sh=)"; \
-		date > $@; \
-    docker image ls $(NAME_PFX)$(NAME):$(<:.Dockerfile.sh=) >> $@
 
 %: %.url .deps/img-mangler.built
 	$(E) "WGET $@ URL: $$(cut -f 1 -d ' ' $<)"
@@ -167,10 +154,6 @@ $(DEPDIR)/%.pushed: $(DEPDIR)/%.built
 			docker tag "$(NAME_PFX)$(NAME):$$TAG" "$(REGISTRY)/$(NAME):$$TAG"; \
 		docker push "$(REGISTRY)/$(NAME):$$TAG"; \
 		: > $@
-
-authorized_keys:
-	$(E) GEN authorized_keys
-	$(Q) cp ~/.ssh/$@ $@
 
 include $(DOCKER_IMAGES_DEPS)
 include $(URL_DEPS)
