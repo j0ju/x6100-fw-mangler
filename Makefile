@@ -17,24 +17,26 @@ url download:
 # additional targets
 build: $(WORK_FILES)
 
-%.img: %.rar
-	$(E) "UNPACK $@ <-- $<"
+%.img: %.rar img-mangler/unrar-img.sh
+	$(E) "UNPACK $@ <--- $<"
 	$(Q) ./bin/D6100 sh $(SHOPT) img-mangler/unrar-img.sh $< $@
 
-%.img: %.zip
+%.img: %.zip img-mangler/unzip-img.sh
 	$(E) "UNPACK $@ <--- $<"
 	$(Q) ./bin/D6100 sh $(SHOPT) img-mangler/unzip-img.sh $< $@
 	$(Q) touch $@
 
-%.tar: %.img
+%.tar: %.img img-mangler/img-to-tar.sh
 	$(E) "TAR $@ <--- $<"
 	$(Q) ./bin/D6100 -p -e COMPRESSOR=cat sh $(SHOPT) img-mangler/img-to-tar.sh $< $@
 
-.deps/%.built: %.tar
-	$(E) "IMAGE $@ <--- $<"
+.deps/%.built: %.tar Makefile ./img-mangler/tar-import.sh
+	$(E) "IMAGE $(NAME_PFX)$(NAME):$(<:.tar=) <--- $<"
 	$(Q) ./img-mangler/tar-import.sh $< $(NAME_PFX)$(NAME):$(<:.tar=)
 
 clean-local:
 	$(Q) rm -f *.zst *.img *.rar *.zip *.tar
 
-# vim: ts=2 sw=2 noet ft=make foldmethod=marker foldmarker=#-,#}
+.SECONDARY: $(%.img)
+
+# vim: ts=2 sw=2 noet ft=make
