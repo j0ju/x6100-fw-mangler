@@ -42,3 +42,6 @@ if [ -z "$COMPRESSOR" ]; then
 fi
 
 tar cf "$TAR" --xattrs --selinux --acls --numeric-owner -I "$COMPRESSOR" -C /mnt .
+
+[ -z "$OWNER" ] || \
+  chown "$OWNER${GROUP:+:$GROUP}" "$TAR"

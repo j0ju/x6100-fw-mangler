@@ -30,4 +30,4 @@ while [ -n "$1" ]; do # eval until the first unknown argument
   esac
 done
 
-eval "exec docker run --rm -ti -v $PWD:/src -w /src $OPTS x6100:img-mangler \"\$@\""
+eval "docker run --rm -ti -v $PWD:/src -w /src -e OWNER=$(id -u) -e GROUP=$(id -g) $OPTS x6100:img-mangler \"\$@\""

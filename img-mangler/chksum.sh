@@ -17,8 +17,12 @@ esac
 
 CHKSUMFILE=".deps/$FILE.$TYPE"sum
 echo "$CHKSUM $FILE" > "$CHKSUMFILE"
+[ -z "$OWNER" ] || \
+  chown "$OWNER${GROUP:+:$GROUP}" "$CHKSUMFILE"
 
-./bin/D6100 "$TYPE"sum -c "$CHKSUMFILE" \
-  && rs=$? || rs=$?
-
-return $rs
+if ! ./bin/D6100 "$TYPE"sum -c "$CHKSUMFILE"; then
+  chksum="$(./bin/D6100 "$TYPE"sum "$FILE" | cut -f1 -d" " )"
+  echo "E: checksum for $FILE does not match."
+  echo "E: Expected $CHKSUM $TYPE."
+  echo "E: It was   $chksum"
+fi >&2
