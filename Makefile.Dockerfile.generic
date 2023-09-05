@@ -118,7 +118,7 @@ $(DEPDIR)/%.$(VER).built: $(DEPDIR)/%.built Makefile
 		docker tag $(NAME_PFX)$(NAME):$$TAG $(NAME_PFX)$(NAME):$$TAG.$(VER) ; \
 			date > "$@"
 
-$(DEPDIR)/%.d: %.url Makefile Makefile.Dockerfile.generic
+$(DEPDIR)/%.d: %.url Makefile.Dockerfile.generic
 	$(E) DEP $(<:.url=)
 	$(Q) set $(SHOPT); ( \
 		DST="$(<:.url=)"; DEPS="$<"; \
@@ -136,12 +136,15 @@ $(DEPDIR)/%.d: %.url Makefile Makefile.Dockerfile.generic
 %: %.url .deps/img-mangler.built
 	$(E) "WGET $@ URL: $$(cut -f 1 -d ' ' $<)"
 	$(Q) set $(SHOPT); exec $(SHREDIR); \
-		read URL CKSUM < $<; \
+		read URL CKSUM OPTS < $<; \
+		[ ! "$$OPTS" = no-continue ] || \
+			rm -f "$@"; \
 		wget $(WGETOPT) -c -O "$@" "$$URL"; \
-		if ! . ./img-mangler/chksum.sh "$@" "$$CKSUM" >&2 ; then \
-		  : rm -f "$@" ; \
-		fi; \
-		touch "$@" \
+		if ! $(SHELL) ./img-mangler/chksum.sh "$@" "$$CKSUM" >&2 ; then \
+		  touch "$<" ; \
+			exit 1 ; \
+		fi ; \
+		touch "$@"
 
 $(DEPDIR)/%.pushed: $(DEPDIR)/%.built
 	$(Q) set -e; \
