@@ -26,7 +26,6 @@ for d in /usr/share/man/*; do
   setx rm -rf "$d"
 done
 
-
 rm -f 2> /dev/null \
   /var/cache/apt/archives/* \
   /var/cache/apt/archives/partial/* \

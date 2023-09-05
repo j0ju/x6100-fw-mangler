@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-set -x
+#set -x
 
 IN="$1"
 IMGNAME="$2"
@@ -20,4 +20,4 @@ esac
 $DECOMPRESSOR < "$IN" | \
   docker exec -i "$CONTAINER" tar xf - --xattrs --selinux --acls --atime-preserve --numeric-owner -C /target
 
-docker commit -c "CMD rm -f /target/etc/resolv.conf; cp /etc/resolv.conf /target/etc/resolv.conf; chroot /target su -"  "$CONTAINER" "$IMGNAME"
+docker commit -c "CMD /bin/bash"  "$CONTAINER" "$IMGNAME"

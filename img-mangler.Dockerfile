@@ -22,12 +22,19 @@ COPY img-mangler/cleanup-rootfs.sh /lib/cleanup-rootfs.sh
 
 RUN set -e; \
     mkdir -p /target; \
+    echo 'APT::Get::Update::SourceListWarnings::NonFreeFirmware "false";' > /etc/apt/apt.conf.d/no-bookworm-firmware.conf ;\
     sed -i -e '/Components/ s/main/main non-free contrib/' /etc/apt/sources.list.d/debian.sources; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-      debootstrap e2fsprogs btrfs-progs f2fs-tools gdisk unzip kpartx mc zstd file pixz xzip cpio pigz git dosfstools \
-      vim-nox bash-completion initramfs-tools build-essential unrar unzip \
+      debootstrap \
+      fdisk gdisk kpartx \
+      dosfstools e2fsprogs btrfs-progs f2fs-tools \
+      libubootenv-tool u-boot-tools \
+      unzip unrar zstd file pixz xzip cpio pigz \
+      build-essential git \
+      qemu-user-static \
+      mc vim-nox bash-completion \
+      procps psmisc man-db \
       ; \
-    apt-get clean; \
+    echo 'case $- in *i*) . /etc/bash_completion ;; esac' >> /etc/bash.bashrc ;\
     sh /lib/cleanup-rootfs.sh
-

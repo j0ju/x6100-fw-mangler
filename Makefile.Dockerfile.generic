@@ -19,9 +19,6 @@ URLS := $(shell ls -1 *.url 2>/dev/null )
 URL_FILES := $(URLS:.url=)
 URL_DEPS := $(URL_FILES:%=$(DEPDIR)/%.d)
 
-# include config if exists
--include ../config.Makefile.Dockerfile.generic
-
 WORK_FILES :=
 
 VER = $(shell echo "$$(git show -s --format=%cI HEAD | grep -o ^....-..-..T..:.. | tr -d ':-' | tr 'T' '-')$$(git stat | grep ^ > /dev/null && echo -dirty)" )
@@ -57,10 +54,13 @@ push:
 
 depend deps dep: $(DOCKER_IMAGES_DEPS)
 
-clean: clean-files docker-image-prune
-mrproper: clean-files docker-image-clean docker-image-prune
+clean: clean-files docker-image-prune clean-local
+
+mrproper: clean-files docker-image-clean docker-image-prune clean-local
 	$(E) MRPROPER
 	$(Q) rm -rf $(DEPDIR) $(WORK_FILES) $(URL_FILES)
+
+clean-local:
 
 clean-files:
 	$(E) CLEAN
@@ -80,7 +80,7 @@ $(DEPDIR)/%.built: %.Dockerfile
 	$(Q) date > $@
 	$(Q) docker image ls $(NAME_PFX)$(NAME):$(<:.Dockerfile=) >> $@
 
-$(DEPDIR)/%.d: %.Dockerfile Makefile
+$(DEPDIR)/%.d: %.Dockerfile Makefile Makefile.Dockerfile.generic
 	$(E) DEP $(NAME_PFX)$(NAME):$(<:.Dockerfile=)
 	$(Q) set $(SHOPT); \
 		awk '$$1 == "FROM" { print $$2 }' $< | ( \
@@ -118,7 +118,7 @@ $(DEPDIR)/%.$(VER).built: $(DEPDIR)/%.built Makefile
 		docker tag $(NAME_PFX)$(NAME):$$TAG $(NAME_PFX)$(NAME):$$TAG.$(VER) ; \
 			date > "$@"
 
-$(DEPDIR)/%.d: %.url Makefile
+$(DEPDIR)/%.d: %.url Makefile Makefile.Dockerfile.generic
 	$(E) DEP $(<:.url=)
 	$(Q) set $(SHOPT); ( \
 		DST="$(<:.url=)"; DEPS="$<"; \
