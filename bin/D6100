@@ -20,11 +20,14 @@ while [ -n "$1" ]; do # eval until the first unknown argument
       shift
       shift
       ;;
+    --pid-host | -ph )
+      shift
+      OPTS="$OPTS --pid host"
+      ;;
     * )
       break
       ;;
   esac
 done
 
-#set -x
 eval "exec docker run --rm -ti -v $PWD:/src -w /src $OPTS x6100:img-mangler \"\$@\""

@@ -18,22 +18,21 @@ url download:
 build: $(WORK_FILES)
 
 
-%.update.img: %.update.rar
+%.img: %.rar
 	$(E) "UNPACK $@ <-- $<"
-	$(Q) bin/D6100 sh $(SHOPT) img-mangler/unrar-img.sh $< $@
+	$(Q) ./bin/D6100 sh $(SHOPT) img-mangler/unrar-img.sh $< $@
 
-%.update.img: %.update.zip
+%.img: %.zip
 	$(E) "UNPACK $@ <--- $<"
-	$(Q) bin/D6100 sh $(SHOPT) img-mangler/unzip-img.sh $< $@
+	$(Q) ./bin/D6100 sh $(SHOPT) img-mangler/unzip-img.sh $< $@
 
-%.update.tar: %.update.img
+%.tar: %.img
 	$(E) "TAR $@ <--- $<"
-	$(Q) bin/D6100 -p -e COMPRESSOR=cat sh $(SHOPT) img-mangler/update-img-to-tar.sh $< $@
+	$(Q) ./bin/D6100 -p -e COMPRESSOR=cat sh $(SHOPT) img-mangler/update-img-to-tar.sh $< $@
 
 .deps/%.built: %.tar
 	$(E) "IMAGE $@ <--- $<"
-	$(Q) $(SHELL) img-mangler/tar-import.sh $< $(NAME_PFX)$(NAME):$(<:.tar=)
-
+	$(Q) ./img-mangler/tar-import.sh $< $(NAME_PFX)$(NAME):$(<:.tar=)
 
 clean:
 	$(E) CLEAN

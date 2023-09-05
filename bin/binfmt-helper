@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./bin/D6100 -p --pid-host /bin/sh ./img-mangler/binfmt-helper.sh "${1:-register}"
