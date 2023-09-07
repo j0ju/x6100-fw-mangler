@@ -33,6 +33,12 @@ build: $(WORK_FILES)
 .deps/%.built: %.tar Makefile ./img-mangler/tar-import.sh
 	$(E) "IMAGE $(NAME_PFX)$(NAME):$(<:.tar=) <--- $<"
 	$(Q) ./img-mangler/tar-import.sh $< $(NAME_PFX)$(NAME):$(<:.tar=)
+	$(Q) : > "$@"
+
+.deps/%.built: %.tgz Makefile ./img-mangler/tar-import.sh
+	$(E) "IMAGE $(NAME_PFX)$(NAME):$(<:.tar=) <--- $<"
+	$(Q) ./img-mangler/tar-import.sh $< $(NAME_PFX)$(NAME):$(<:.tgz=)
+	$(Q) : > "$@"
 
 clean-local:
 	$(Q) rm -f *.zst *.img *.rar *.zip *.tar
