@@ -32,6 +32,7 @@ RUN set -e; \
       libubootenv-tool u-boot-tools \
       unzip unrar zstd file pixz xzip cpio pigz \
       build-essential git \
+      python3-pip virtualenv \
       qemu-user-static \
       mc vim-nox bash-completion \
       procps psmisc man-db \
