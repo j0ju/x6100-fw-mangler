@@ -20,7 +20,7 @@ ENV PKGS=" \
   mtr tcpdump \
   iproute2 \
   file libmagic \
-  vim lua5.4 \
+  vim vim-common lua5.4 \
   mc \
   curl wget \
   xxd xz zstd \

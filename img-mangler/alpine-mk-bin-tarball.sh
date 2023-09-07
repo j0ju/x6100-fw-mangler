@@ -24,5 +24,5 @@ LIBS="$( \
 tar czf $BINPKG $FILES $LIBS
 if [ ! -s "$BINPKG" ]; then :
   echo "W: $BINPKG is empty, removing" >&2
-  rm -f "$PKG.bin.tar"
+  rm -f "$BINPKG"
 fi
