@@ -4,13 +4,24 @@ set -e
 PREFIX="${0%/bin/${0##*/}}"
 DEP_DIR="$PREFIX/.deps"
 BUILT_FLAG="$DEP_DIR/img-mangler.built"
+IMAGE=x6100:img-mangler
 
 [ -f "$BUILT_FLAG" ] || \
   make img-mangler
 
 OPTS=
+OPTS="$OPTS --rm"
+
+if [ "$#" = 0 ]; then
+  OPTS="$OPTS -it"
+fi
+
 while [ -n "$1" ]; do # eval until the first unknown argument
   case "$1" in
+    -it | -ti | -i | -t )
+      OPTS="$OPTS $1"
+      shift
+      ;;
     -p )
       OPTS="$OPTS --privileged"
       shift
@@ -24,10 +35,15 @@ while [ -n "$1" ]; do # eval until the first unknown argument
       shift
       OPTS="$OPTS --pid host"
       ;;
+    --image )
+      IMAGE="$2"
+      shift
+      shift
+      ;;
     * )
       break
       ;;
   esac
 done
 
-eval "docker run --rm -ti -v $PWD:/src -w /src -e OWNER=$(id -u) -e GROUP=$(id -g) $OPTS x6100:img-mangler \"\$@\""
+eval "docker run --rm -v $PWD:/src -w /src -e OWNER=$(id -u) -e GROUP=$(id -g) $OPTS $IMAGE \"\$@\""

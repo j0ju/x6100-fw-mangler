@@ -40,6 +40,11 @@ build: $(WORK_FILES)
 	$(Q) ./img-mangler/tar-import.sh $< $(NAME_PFX)$(NAME):$(<:.tgz=)
 	$(Q) : > "$@"
 
+%.rootfs.tar.gz: .deps/%.built Makefile
+	$(E) "TAR $@"
+	$(Q) ./bin/D6100 --image $(NAME_PFX)$(NAME):$(@:.rootfs.tar.gz=) tar czf - -C /target . >$@
+
+
 clean-local:
 	$(Q) rm -f *.zst *.img *.rar *.zip *.tar
 
