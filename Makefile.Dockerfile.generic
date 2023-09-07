@@ -68,7 +68,7 @@ clean-files:
 
 docker-image-clean:
 	$(E) IMAGE CLEAN
-	$(Q) for i in $(DOCKER_IMAGES); do docker image rm $(NAME_PFX)$(NAME):$$i 2> /dev/null || :; done
+	$(Q) docker image ls | awk '$$1 == "$(NAME_PFX)$(NAME)" {print $$1":"$$2}' | while read img; do docker image rm -f "$$img"; done
 
 docker-image-prune:
 	$(E) IMAGE PRUNE
