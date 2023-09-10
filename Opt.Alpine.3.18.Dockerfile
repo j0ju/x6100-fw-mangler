@@ -10,16 +10,19 @@ ENV OUTPUT_DIR=/tarballs
 ENV BINPKGS=" \
   mkimage \
   ss \
+  nsenter unshare \
+  ip \
 "
-  #unshare nsenter \
 
 ENV PKGS=" \
   ncurses ncurses-terminfo ncurses-terminfo-base \
   wavemon htop procps psmisc usbutils hwids-usb \
+  e2fsprogs e2fsprogs-extra \
   u-boot-tools \
   mtr tcpdump \
   iproute2 \
   file libmagic \
+  sed \
   vim vim-common lua5.4 \
   mc \
   curl wget \
@@ -30,6 +33,8 @@ ENV PKGS=" \
   tmux screen minicom \
   jq \
   rsync \
+  wipefs \
+  bash-completion iproute2-bash-completion procs-bash-completion util-linux-bash-completion mtr-bash-completion \
 "
   #sed file \
 
@@ -75,7 +80,7 @@ COPY img-mangler/alpine-mk-pkg-tarball.sh /
 # create tarballs from binaries
 RUN set -ex ; \
   : --- dump of tarballs ;\
-    for BINPKGS in $BINS; do \
+    for BIN in $BINPKGS; do \
       sh -e /alpine-mk-bin-tarball.sh $BIN $OUTPUT_DIR; \
     done; \
 : # eo RUN

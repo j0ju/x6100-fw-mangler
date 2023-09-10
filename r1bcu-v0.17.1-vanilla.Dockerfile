@@ -7,4 +7,4 @@ RUN set -ex ;\
   rm -rf /target.old ;\
 : # eo RUN
 
-CMD rm -f /target/etc/resolv.conf; cp /etc/resolv.conf /target/etc/resolv.conf; HOME=/root SHELL=/bin/bash chroot /target /bin/bash
+CMD rm -f /target/etc/resolv.conf; cp /etc/resolv.conf /target/etc/resolv.conf; exec env HOME=/root SHELL=/bin/bash chroot /target /bin/bash -l

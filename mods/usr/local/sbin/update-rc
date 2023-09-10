@@ -1,0 +1,38 @@
+#!/bin/sh
+set -e
+
+SRC="$__PREFIX__/etc/init.d"
+TARGET="$__PREFIX__/usr/local/sbin"
+
+for initfile in "$SRC"/*; do
+  file="${initfile##*/}"
+  rcfile="${TARGET}/rc${file}"
+
+  if [ -x "$initfile" -a ! -d "$initfile" ]; then
+    if [ ! -e "$rcfile" ]; then
+      echo -n "${initfile#$__PREFIX__} -> ${rcfile#$__PREFIX__} "
+      ln -sf "${initfile#$__PREFIX__}" "$rcfile" && echo Ok. || echo "failed."
+    fi
+  fi
+done
+
+if [ -z "$__PREFIX__" ]; then
+  for rcfile in $TARGET/rc*; do
+    link="$(readlink "$rcfile")"
+    case "$link" in
+      "$SRC"* ) : ;;
+      * ) continue ;;
+    esac
+    file="$(basename "$rcfile")"
+    file="${file#??}"
+    initfile="$SRC/$file"
+
+    if [ -L "$rcfile" ]; then
+      if [ ! -x "$initfile" -o -d "$initfile" ]; then
+        echo -n "removed old $rcfile "
+        rm -f "$rcfile" && echo Ok. || echo "failed."
+      fi
+    fi
+  done
+fi
+

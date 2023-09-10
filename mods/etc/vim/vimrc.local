@@ -1,0 +1,37 @@
+" /etc/vim/vimrc.local
+
+" do not read defaults again after this file overriding everything,
+" if the ~user/.vimrc does not exist/is readable
+"let skip_defaults_vim=1
+
+set autoindent    " always set autoindenting on
+set linebreak     " don't wrap words by default
+set nowrap
+
+set ai
+
+set modeline
+set modelines=5
+
+if has('mouse')
+  set mouse=r
+endif
+
+set hlsearch            " Highlight search results
+:nnoremap <CR> :nohlsearch<cr>
+
+set showcmd
+
+set showmode            " show --INSERT--
+set title               " Show file name in xterm
+set backspace=2         " ^W should work everywhere
+set ruler               " Show line numbers
+
+" show "wrong" whitespace
+set tabstop=2 shiftwidth=2      " a tab is two spaces
+set expandtab                   " use spaces, not tabs
+set backspace=indent,eol,start  " backspace through everything in insert
+
+color ron
+syntax enable
+
