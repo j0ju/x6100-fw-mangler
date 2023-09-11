@@ -40,11 +40,13 @@ RUN set -ex ;\
     chroot /target /usr/local/sbin/update-rc ;\
     find /target/etc -name "*.old" -delete ;\
     echo "mediafs /media tmpfs mode=0755,nosuid,nodev 0 0" >> /target/etc/fstab ;\
-    rm -f /target/etc/udev/rules.d/*-auto-mount.rules ;\
+    : rm -f /target/etc/udev/rules.d/*-auto-mount.rules ;\
   : ----- set new default password ;\
     ( echo "x6100"; echo "x6100"; echo ) | chroot /target passwd root ;\
-  : ----- set new default password ;\
-
+  : ----- generate new boot script ;\
+    ( cd /target/boot ;\
+      mkimage -A arm -T script -d boot.u-boot boot.scr ;\
+    ) ;\
   : #
 
 

@@ -44,6 +44,17 @@ build: $(WORK_FILES)
 	$(E) "TAR $@"
 	$(Q) ./bin/D6100 --image $(NAME_PFX)$(NAME):$(@:.rootfs.tar.gz=) tar czf - -C /target . >$@
 
+%.sdcard.img: .deps/%.built Makefile ./img-mangler/docker-img-to-sdcard.sh sdcard.uboot+spl.img
+	$(E) "IMAGE $@"
+	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.sdcard.img=) sh img-mangler/docker-img-to-sdcard.sh $@
+
+%.uboot+spl.img: %.img
+	$(E) "IMAGE $@"
+	$(Q) dd if=$< of=$@ bs=1024 skip=8 count=640
+
+sdcard.uboot+spl.img: X6100-1.1.7.update.uboot+spl.img
+	$(E) "IMAGE $@"
+	$(Q) cat $< > $@
 
 clean-local:
 	$(Q) rm -f *.zst *.img *.rar *.zip *.tar
