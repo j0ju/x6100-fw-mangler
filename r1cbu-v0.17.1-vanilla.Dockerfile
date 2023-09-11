@@ -1,4 +1,4 @@
-FROM x6100:R1BCU-v0.17.1.sdcard
+FROM x6100:R1CBU-v0.17.1.sdcard
 
 RUN set -ex ;\
   mv /target /target.old ;\
