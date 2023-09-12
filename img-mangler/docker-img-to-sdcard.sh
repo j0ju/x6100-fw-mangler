@@ -16,14 +16,15 @@ IMAGE_SIZE_KB=$(( ( IMAGE_SIZE_KB / ROUND_UP_KB ) * ROUND_UP_KB ))
 
 IMAGE="$1"
 
-#--- generate sparse image and partition it
 : > $IMAGE
+#--- write uboot for sdcard boot
 dd if=sdcard.uboot+spl.img bs=1024 seek=8 of=$IMAGE
+#--- generate sparse image
 dd if=/dev/zero bs=1024 count=0 seek=$IMAGE_SIZE_KB of=$IMAGE
+#--- partition it
 sfdisk $IMAGE <<EOF
   label: dos
-  type=06 start=2048 size=16M bootable
-  type=83
+  type=83 start=2048 bootable
 EOF
 
 #--- mount image fs
@@ -53,22 +54,14 @@ trap cleanup EXIT TERM HUP INT USR1 USR2 STOP CONT
 DEVS="$(kpartx -av "$IMAGE" | grep -oE 'loop[^ ]+' | sort -u)"
 
 P1="$(echo $DEVS | grep -E -o "[^ ]+p1")"
-P2="$(echo $DEVS | grep -E -o "[^ ]+p2")"
 mkdir -p /mnt/part1
-mkdir -p /mnt/part2
 
-if [ -f /target/usr/share/emmc_sources/u-boot-sunxi-with-spl.bin ]; then
-  dd if=/target/usr/share/emmc_sources/u-boot-sunxi-with-spl.bin of=/dev/mmcblk2 bs=1024 seek=8
-fi
+mkfs.ext4 -L x6100root /dev/mapper/$P1
 
-mkfs.vfat -n x6100boot /dev/mapper/$P1
-mkfs.ext4 -L x6100root /dev/mapper/$P2
-
-mount -t vfat /dev/mapper/$P1 /mnt/part1
-mount -t ext4 /dev/mapper/$P2 /mnt/part2
+mount -t ext4 /dev/mapper/$P1 /mnt/part1
 
 #--- copy rootfs
-tar cf - -C /target . | tar xf - -C /mnt/part2 --atime-preserve
+tar cf - -C /target . | tar xf - -C /mnt/part1 --atime-preserve
 
 [ -z "$OWNER" ] || \
   chown "$OWNER${GROUP:+:$GROUP}" "$IMAGE"
