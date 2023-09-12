@@ -48,6 +48,10 @@ build: $(WORK_FILES)
 	$(E) "IMAGE $@"
 	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.sdcard.img=) sh img-mangler/docker-img-to-sdcard.sh $@
 
+%.update.img: .deps/%.built Makefile ./img-mangler/docker-img-to-sdcard.sh sdcard.uboot+spl.img
+	$(E) "IMAGE $@"
+	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.update.img=) sh img-mangler/docker-img-to-sdcard.sh --update $@
+
 %.uboot+spl.img: %.img
 	$(E) "IMAGE $@"
 	$(Q) dd if=$< of=$@ bs=1024 skip=8 count=640
