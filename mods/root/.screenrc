@@ -1,4 +1,4 @@
-# .screenrc - Managed by Ansible - local changes will be overwritten - roles/dot/Screen
+# .screenrc
 
 startup_message     off
 autodetach          on
@@ -23,9 +23,8 @@ shelltitle          sh
 defshell            -/bin/bash
 
 bind ^s split
-bind l screen -t LOG tail -f /var/log/messgaes
+#bind l screen -t LOG tail -f /var/log/messgaes
 #bind r screen -t r sudo -i
-
 #screen -t LOG journalctl --system -n 99 -f
 
 # vim:ts=20:noet

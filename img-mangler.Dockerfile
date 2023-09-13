@@ -19,9 +19,13 @@ ENV \
   LC_IDENTIFICATION=C.UTF-8
 
 COPY img-mangler/cleanup-rootfs.sh /lib/cleanup-rootfs.sh
+COPY mods/etc/vim/vimrc.local /etc/vim/vimrc.local
+COPY mods/etc/mc/mc.ini /etc/mc/mc.ini
+COPY mods/root/.gitconfig /etc/gitconfig
 
 RUN set -e; \
-    mkdir -p /target; \
+    mkdir -p /target ; \
+    cp /etc/gitconfig /root/.gitconfig ;\
     echo 'APT::Get::Update::SourceListWarnings::NonFreeFirmware "false";' > /etc/apt/apt.conf.d/no-bookworm-firmware.conf ;\
     sed -i -e '/Components/ s/main/main non-free contrib/' /etc/apt/sources.list.d/debian.sources; \
     apt-get update; \
@@ -31,11 +35,13 @@ RUN set -e; \
       dosfstools e2fsprogs btrfs-progs f2fs-tools \
       libubootenv-tool u-boot-tools \
       unzip unrar zstd file pixz xzip cpio pigz \
-      build-essential git \
       python3-pip virtualenv \
       qemu-user-static \
       mc vim-nox bash-completion \
       procps psmisc man-db \
+      git \
+      build-essential libncurses-dev \
+      rsync bc cmake bzip2 \
       ; \
     echo 'case $- in *i*) . /etc/bash_completion ;; esac' >> /etc/bash.bashrc ;\
     sh /lib/cleanup-rootfs.sh

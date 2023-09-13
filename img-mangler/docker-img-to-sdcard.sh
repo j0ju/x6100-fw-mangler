@@ -25,7 +25,7 @@ IMAGE="$1"
 
 : > $IMAGE
 #--- write uboot for sdcard boot
-dd if=sdcard.uboot+spl.img bs=1024 seek=8 of=$IMAGE status=none
+dd if=uboot.img bs=1024 seek=8 of=$IMAGE status=none
 #--- generate sparse image
 dd if=/dev/zero bs=1024 count=0 seek=$IMAGE_SIZE_KB of=$IMAGE status=none
 #--- partition it
@@ -73,7 +73,6 @@ mount -t ext4 /dev/mapper/$P1 /mnt/part1
 echo "COPY"
 tar cf - -C /target . | tar xf - -C /mnt/part1 --atime-preserve
 
-set -x
 if [ "$UPDATE" = yes ]; then
   ( cd img-mangler/update
     UPDATE_SH=flash-emmc.sh

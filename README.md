@@ -9,6 +9,11 @@
  * make modifications reproducible
  * ease debugging
 
+## Features
+ * generates a runable SDCard image with some modidications with an new partition layout
+ * generates a runable update image on SDCard with some modifications with a new partition layout
+ * integrates some more helper utils from Alpine into stock images
+
 ## `Don't`s
  No warranty, I will not be responsible for what ever you do with this images, they migh break your device, be sane and think.
  I advise not distributing images generated this way, they contain copyrighted material.
@@ -55,11 +60,8 @@
 
 # Plans
 
- * generate SD runable image
- * regenerate update image from modified image
  * patch https://github.com/busysteve/X6100-Bluetooth-Audio
  * patch FONT
- * integrate debugging utils from Alpine
  * generate runable image with GUI selection Original + R1BCU with hotkey selection in u-boot from https://github.com/Links2004/x6100-armbian
  * use stripped down version of ansible-openwrt (https://github.com/gekmihesg/ansible-openwrt) to configure or modify an running system on a X6100.
 

@@ -6,7 +6,7 @@ IN="$1"
 IMGNAME="$2"
 
 CONTAINER="$(docker run --rm -d x6100:img-mangler sleep 3600)"
-trap "docker rm -f $CONTAINER" EXIT HUP INT QUIT PIPE KILL TERM
+trap "docker rm -f $CONTAINER > /dev/null" EXIT HUP INT QUIT PIPE KILL TERM
 
 DECOMPRESSOR=cat
 
@@ -18,6 +18,6 @@ case "$IN" in
 esac
 
 $DECOMPRESSOR < "$IN" | \
-  docker exec -i "$CONTAINER" tar xf - --xattrs --selinux --acls --atime-preserve --numeric-owner -C /target
+  docker exec -i "$CONTAINER" tar xf - --xattrs --selinux --acls --atime-preserve --numeric-owner -C /target > /dev/null
 
-docker commit -c "CMD /bin/bash"  "$CONTAINER" "$IMGNAME"
+docker commit -c "CMD /bin/bash"  "$CONTAINER" "$IMGNAME" > /dev/null
