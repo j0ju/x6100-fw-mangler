@@ -1,0 +1,8 @@
+# - makefile -
+# config for ../docker-images/Makefile.Dockerfile.generic
+
+#DOCKER_IMAGES :=
+#DOCKER_IMAGES += v1.1.7-modded
+
+#WORK_FILES :=
+#WORK_FILES += v1.1.7-modded.sdcard.img
