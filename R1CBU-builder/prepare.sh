@@ -29,6 +29,7 @@ cd /workspace
 
 cd /workspace/AetherX6100Buildroot
   cp /src/R1CBU-builder/sun8i-r16-x6100_defconfig /workspace/AetherX6100Buildroot/br2_external/board/X6100/linux
+  cp /src/R1CBU-builder/X6100_defconfig           /workspace/AetherX6100Buildroot/br2_external/configs/X6100_defconfig
   sh br_config.sh
   #cd build
   #make
