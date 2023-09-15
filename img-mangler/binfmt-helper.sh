@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-set -x
+#set -x
 
 # sets up binfmt emulation using qemu-user-static for docker environments, where it is not available per default
 # eg. Rancher Desktop
@@ -25,7 +25,7 @@ binfmt_register_arm() {
     # copy image for to host in case of LIMA
     # this does nothing if you are on Debian or Ubuntu a-like distributions if qemu-user-static is installed
     # TODO: what about other distributions like arch?
-    nsenter -at 1 -- /bin/sh -e -x -c "
+    nsenter -at 1 -- /bin/sh -e -c "
       if [ ! -x '${qemu}' ]; then
         mkdir -p '${qemu%/*}'
         cat > '${qemu}'
@@ -35,7 +35,7 @@ binfmt_register_arm() {
 
     # register arm helper, if not already registered, as the name qemu-arm is a standard used, it should do nothing if already registered
     echo ":qemu-$family:M::$magic:$mask:${qemu}:$flags" | \
-      nsenter -at 1 -- /bin/sh -e -x -c "cd /proc/sys/fs/binfmt_misc; [ -f qemu-$family ] || cat > register"
+      nsenter -at 1 -- /bin/sh -e -c "cd /proc/sys/fs/binfmt_misc; [ -f qemu-$family ] || cat > register"
   fi
 }
 
