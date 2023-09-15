@@ -4,7 +4,7 @@ RUN set -ex ;\
   rm -f /target/linuxrc ;\
   : #
 
-COPY mods /tmp/mods
+COPY xiegu.mods/filesystem /tmp/mods
 
 RUN set -ex ;\
   : ----- rework init system a bit ; \

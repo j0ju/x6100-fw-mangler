@@ -19,9 +19,9 @@ ENV \
   LC_IDENTIFICATION=C.UTF-8
 
 COPY img-mangler/cleanup-rootfs.sh /lib/cleanup-rootfs.sh
-COPY mods/etc/vim/vimrc.local /etc/vim/vimrc.local
-COPY mods/etc/mc/mc.ini /etc/mc/mc.ini
-COPY mods/root/.gitconfig /etc/gitconfig
+COPY xiegu.mods/filesystem/etc/vim/vimrc.local /etc/vim/vimrc.local
+COPY xiegu.mods/filesystem/etc/mc/mc.ini /etc/mc/mc.ini
+COPY xiegu.mods/filesystem/root/.gitconfig /etc/gitconfig
 
 RUN set -e; \
     mkdir -p /target ; \
