@@ -68,8 +68,26 @@ uboot.img: X6100-1.1.7.update.uboot.img
 	$(E) "IMAGE $@"
 	$(Q) cat $< > $@
 
+.deps/%.volume:
+	$(E) "DOCKER VOLUME $(NAME_PFX)$(NAME)-$$( basename $(@:.volume=) )"
+	$(Q) set $(SHOPT); \
+		image="$(NAME_PFX)$(NAME)-$$( basename $(@:.volume=) )" ;\
+		docker volume inspect $$image > $@ 2>/dev/null || \
+		  docker volume create $$image > $@
+
+.deps/%.built: %/workspace.sh .deps/img-mangler.built .deps/%.volume
+	./bin/D6100 -v $(NAME_PFX)$(NAME)-buildroot:/workspace sh $<
+
 #--- extend clean-local target
-clean-local:
+clean-local: clean-volumes
 	$(Q) rm -f *.zst *.img *.rar *.zip *.tar
+
+clean-volumes:
+	$(Q) docker volume ls -q | grep ^"$(NAME_PFX)$(NAME)-" | while read v; do \
+		docker volume inspect "$$v" > /dev/null 2>&1 && \
+		  docker volume rm "$$v" > /dev/null; \
+		echo "DELETE VOLUME $$v" ;\
+		rm -f "$$i";\
+	done
 
 # vim: ts=2 sw=2 noet ft=make

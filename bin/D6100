@@ -40,6 +40,11 @@ while [ -n "$1" ]; do # eval until the first unknown argument
       shift
       shift
       ;;
+    -v )
+      OPTS="$OPTS -v $2"
+      shift
+      shift
+      ;;
     * )
       break
       ;;
