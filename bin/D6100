@@ -5,6 +5,7 @@ PREFIX="${0%/bin/${0##*/}}"
 DEP_DIR="$PREFIX/.deps"
 BUILT_FLAG="$DEP_DIR/img-mangler.built"
 IMAGE=x6100:img-mangler
+WORKDIR=/src
 
 [ -f "$BUILT_FLAG" ] || \
   make img-mangler
@@ -45,10 +46,15 @@ while [ -n "$1" ]; do # eval until the first unknown argument
       shift
       shift
       ;;
+    -w )
+      WORKDIR="$2"
+      shift
+      shift
+      ;;
     * )
       break
       ;;
   esac
 done
 
-eval "docker run --rm -v $PWD:/src -w /src -e OWNER=$(id -u) -e GROUP=$(id -g) $OPTS $IMAGE \"\$@\""
+eval "docker run --rm -v $PWD:/src -w '$WORKDIR' -e 'OWNER=$(id -u)' -e 'GROUP=$(id -g)' $OPTS '$IMAGE' \"\$@\""
