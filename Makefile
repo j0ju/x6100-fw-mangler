@@ -51,12 +51,12 @@ build: $(WORK_FILES)
 #--- build a SDcard bootable image
 %.sdcard.img: .deps/%.built Makefile ./img-mangler/docker-img-to-sdcard.sh uboot.img
 	$(E) "IMAGE $@"
-	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.sdcard.img=) sh img-mangler/docker-img-to-sdcard.sh $@
+	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.sdcard.img=) sh $(SHOPT) img-mangler/docker-img-to-sdcard.sh $@
 
 #--- build an update image
 %.update.img: .deps/%.built Makefile ./img-mangler/docker-img-to-sdcard.sh uboot.img
 	$(E) "IMAGE $@"
-	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.update.img=) sh img-mangler/docker-img-to-sdcard.sh --update $@
+	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.update.img=) sh $(SHOPT) img-mangler/docker-img-to-sdcard.sh --update $@
 
 #--- extract uboot from image
 %.uboot.img: %.img
@@ -64,7 +64,7 @@ build: $(WORK_FILES)
 	$(Q) ./bin/D6100 dd if=$< of=$@ bs=1024 skip=8 count=640 status=none
 
 #--- generate a known good uboot
-uboot.img: X6100-1.1.7.update.uboot.img
+uboot.img: X6100-1.1.7.1.update.uboot.img
 	$(E) "IMAGE $@"
 	$(Q) cat $< > $@
 

@@ -1,4 +1,4 @@
-FROM x6100:X6100-1.1.7.update
+FROM x6100:X6100-1.1.7.1.update
 
 # extract update tarball to /
 RUN set -ex ;\
