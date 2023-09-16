@@ -44,8 +44,12 @@ RUN set -ex ;\
   : ----- disable usb mmc automounting ;\
     mkdir -p /target/etc/udev/rules.d/disabled ;\
     mv -f /target/etc/udev/rules.d/*-auto-mount.rules /target/etc/udev/rules.d/disabled ;\
+  : ----- remove GPIB IEEE488 development leftovers ;\
+    grep gpib /target//etc/udev/rules.d/*.rules -l | xargs rm -f ;\
   : ----- set new default password ;\
     ( echo "x6100"; echo "x6100"; echo ) | chroot /target passwd root ;\
+  : ----- set shell to /bin/bash ;\
+    sed -i -e '/^root/ s|/bin/sh|/bin/bash|' /target/etc/passwd ;\
   : ----- generate new boot script ;\
     ( cd /target/boot ;\
       mkimage -A arm -T script -d boot.u-boot boot.scr ;\
