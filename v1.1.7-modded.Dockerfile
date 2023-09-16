@@ -7,6 +7,10 @@ RUN set -ex ;\
 COPY xiegu.mods/filesystem /tmp/mods
 
 RUN set -ex ;\
+  : ----- install bluetooth hack ; \
+    git clone https://github.com/busysteve/X6100-Bluetooth-Audio.git /target/tmp/bthack ;\
+    chroot /target sh -x -c "cd /tmp/bthack; . ./install.sh" ;\
+    rm -rf /tmp/bthack ;\
   : ----- rework init system a bit ; \
     mkdir /target/etc/rc.d ;\
     cd /target/etc/init.d ;\
