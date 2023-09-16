@@ -8,7 +8,7 @@ PART=/dev/mmcblk2p1
 dd if=/dev/mmcblk0 of="$DEV" bs=1024 skip=8 seek=8 count=640 status=none
 sfdisk "$DEV" > /dev/null <<EOF
   label: dos
-  type=83 start=2048 bootable
+  2: type=83 start=2048 bootable
 EOF
 
 mkdir -p /media/orig

@@ -32,13 +32,15 @@ dd if=/dev/zero bs=1024 count=0 seek=$IMAGE_SIZE_KB of=$IMAGE status=none
 echo "PARTITION"
 sfdisk $IMAGE > /dev/null <<EOF
   label: dos
-  type=83 start=2048 bootable
+  2: type=83 start=2048 bootable
 EOF
 
 #--- mount image fs
 cleanup() {
   local rs=$?
   local d
+  [ $rs = 0 ] || \
+    rm -f "$IMAGE"
   cd /
   for m in /mnt/part*; do
     umount "$m" 2> /dev/null || :
@@ -61,28 +63,28 @@ cleanup() {
 trap cleanup EXIT TERM HUP INT USR1 USR2 STOP CONT
 DEVS="$(kpartx -av "$IMAGE" | grep -oE 'loop[^ ]+' | sort -u)"
 
-P1="$(echo $DEVS | grep -E -o "[^ ]+p1")"
-mkdir -p /mnt/part1
+P2="$(echo $DEVS | grep -E -o "[^ ]+p2")"
+mkdir -p /mnt/
 
 echo "MKFS"
-mkfs.ext4 -q -L x6100root /dev/mapper/$P1
+mkfs.ext4 -q -L x6100root /dev/mapper/$P2
 
-mount -t ext4 /dev/mapper/$P1 /mnt/part1
+mount -t ext4 /dev/mapper/$P2 /mnt
 
 #--- copy rootfs
 echo "COPY"
-tar cf - -C /target . | tar xf - -C /mnt/part1 --atime-preserve
+tar cf - -C /target . | tar xf - -C /mnt --atime-preserve
 
 if [ "$UPDATE" = yes ]; then
   ( cd img-mangler/update
     UPDATE_SH=flash-emmc.sh
     find . -type f | while read f; do
-      if [ -f "/mnt/part1/$f" ]; then
-        mv "/mnt/part1/$f" "/mnt/part1/$f.$UPDATE_SH"
+      if [ -f "/mnt/$f" ]; then
+        mv "/mnt/$f" "/mnt/$f.$UPDATE_SH"
       fi
-      cp "$f" "/mnt/part1/$f"
+      cp "$f" "/mnt/$f"
     done
-    chmod 0755 "/mnt/part1/$UPDATE_SH"
+    chmod 0755 "/mnt/$UPDATE_SH"
   )
 fi
 
