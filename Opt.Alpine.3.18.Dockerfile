@@ -26,6 +26,7 @@ ENV PKGS=" \
   vim vim-common lua5.4 \
   mc \
   curl wget \
+  git \
   xxd xz zstd \
   pv \
   strace ltrace lsof \
