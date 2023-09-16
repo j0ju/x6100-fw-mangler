@@ -7,16 +7,22 @@ ENV SRC=/lib/ld-musl-armhf.so.1
 ENV NEW_LIBPATH=/opt/alpine/lib
 ENV OUTPUT_DIR=/tarballs
 
+ENV REQ_PKGS=" \
+  sed file \
+  multipath-tools \
+"
+
 ENV BINPKGS=" \
   mkimage \
   ss \
   nsenter unshare \
-  ip \
 "
+#  kpartx \
 
 ENV PKGS=" \
   ncurses ncurses-terminfo ncurses-terminfo-base \
   wavemon htop procps psmisc usbutils hwids-usb \
+  partx \
   e2fsprogs e2fsprogs-extra \
   u-boot-tools \
   mtr tcpdump \
@@ -24,6 +30,7 @@ ENV PKGS=" \
   file libmagic \
   sed \
   vim vim-common lua5.4 \
+  helix \
   mc \
   curl wget \
   git \
@@ -37,11 +44,10 @@ ENV PKGS=" \
   wipefs \
   bash-completion iproute2-bash-completion procs-bash-completion util-linux-bash-completion mtr-bash-completion \
 "
-  #sed file \
 
 # install packages
 RUN set -ex; \
-  apk add --no-cache sed file ;\
+  apk add --no-cache $REQ_PKGS ;\
   apk add --no-cache $PKGS ;\
 : # eo RUN
 
@@ -63,6 +69,7 @@ RUN set -ex ; \
     rm -f \
       /opt/alpine/lib/libcrypto.so.3 \
       /opt/alpine/lib/libssl.so.3 \
+      /opt/alpine/lib/libudev.so.1.6.3 \
       ; \
     cp -a /lib     "${NEW_LIBPATH%/*}" ; \
     mv "/${SRC##*/}" "$DST" ; \
