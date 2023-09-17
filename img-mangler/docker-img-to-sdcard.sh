@@ -4,22 +4,37 @@ set -e
 
 #---
 UPDATE=no
-if [ "$1" = --update ]; then
-  UPDATE=yes
-  shift
-fi
+ROUND_UP=1024
+MIN_FREE=512
+while [ -n "$1" ]; do
+  case "$1" in
+    --update )
+      UPDATE=yes
+      shift
+      ;;
+    --round-up )
+      ROUND_UP="$2"
+      shift
+      shift
+      ;;
+    --min-free )
+      MIN_FREE="$2"
+      shift
+      shift
+      ;;
+    * ) break ;;
+  esac
+done
 
 #--- calculate image size
 USAGE_KB="$(du -sk /target | { read kb _; echo $kb; })"
 
 
-MIN_FREE_SPACE_KB="$((512*1024))" # 0.5GB in KB
-#MIN_FREE_SPACE_KB="$((1024*1024))" # 1GB in KB
-ROUND_UP_KB="$((512*1024))" # 0.5GB in KB
-#ROUND_UP_KB="$((1024*1024))" # 1GB in KB
+MIN_FREE_SPACE_KB="$(( MIN_FREE * 1024 ))" # 0.5GB in KB
+ROUND_UP_KB="$(( ROUND_UP * 1024 ))" # 0.5GB in KB
 
-IMAGE_SIZE_KB=$(( USAGE_KB + MIN_FREE_SPACE_KB + ROUND_UP_KB ))
-IMAGE_SIZE_KB=$(( ( IMAGE_SIZE_KB / ROUND_UP_KB ) * ROUND_UP_KB ))
+IMAGE_SIZE_KB=$(( USAGE_KB + MIN_FREE_SPACE_KB ))
+IMAGE_SIZE_KB=$(( ( IMAGE_SIZE_KB / ROUND_UP_KB +1 ) * ROUND_UP_KB ))
 
 IMAGE="$1"
 
