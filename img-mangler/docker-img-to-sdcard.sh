@@ -42,7 +42,7 @@ cleanup() {
   [ $rs = 0 ] || \
     rm -f "$IMAGE"
   cd /
-  for m in /mnt/part*; do
+  for m in /mnt/part* /mnt; do
     umount "$m" 2> /dev/null || :
   done
   for d in $DEVS; do
