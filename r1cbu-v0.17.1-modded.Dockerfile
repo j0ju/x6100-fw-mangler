@@ -50,6 +50,7 @@ RUN set -ex ;\
       /target/etc/nginx \
       /target/mnt/emmc_* \
       /target/mnt/update \
+      /target/boot/zimage \
       ; \
   : #
 
