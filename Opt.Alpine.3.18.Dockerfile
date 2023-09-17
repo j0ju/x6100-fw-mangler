@@ -10,6 +10,7 @@ ENV OUTPUT_DIR=/tarballs
 ENV REQ_PKGS=" \
   sed file \
   multipath-tools \
+  sfdisk \
 "
 
 ENV BINPKGS=" \
