@@ -18,6 +18,8 @@ done
 
 if [ -z "$__PREFIX__" ]; then
   for rcfile in $TARGET/rc*; do
+    [ -L "$rcfile" ] || \
+      continue
     link="$(readlink "$rcfile")"
     case "$link" in
       "$SRC"* ) : ;;
