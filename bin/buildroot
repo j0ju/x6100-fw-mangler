@@ -1,0 +1,9 @@
+#!/bin/sh
+
+#WD=/workspace
+WD=/workspace/AetherX6100Buildroot/build
+
+[ -f .deps/buildroot.built ] || \
+  make .deps/buildroot.built
+
+exec ./bin/D6100 -it -v x6100-buildroot:/workspace -w $WD
