@@ -1,10 +1,11 @@
-echo "uboot: mmc $devnum"
-setenv rootdev ""
-if test "$devnum" = "0"; then setenv rootdev /dev/mmcblk0; fi
-if test "$devnum" = "1"; then setenv rootdev /dev/mmcblk2; fi
-echo "uboot: root dev $rootdev"
+# UBoot boot script for X6100
 
-setenv bootargs console=ttyS0,115200 root=${rootdev}p2 rootwait panic=10 fbcon=rotate:3 video=VGA:480x800
+setenv rootdev PARTUUID=
+
+echo setenv bootargs console=ttyS0,115200 root=${rootdev} rootwait panic=10 fbcon=rotate:3 video=VGA:480x800
+setenv bootargs console=ttyS0,115200 root=${rootdev} rootwait panic=10 fbcon=rotate:3 video=VGA:480x800
+echo ext4load mmc $devnum:2 0x46000000 /boot/zImage
 ext4load mmc $devnum:2 0x46000000 /boot/zImage
+echo ext4load mmc $devnum:2 0x49000000 /boot/${fdtfile}
 ext4load mmc $devnum:2 0x49000000 /boot/${fdtfile}
 bootz 0x46000000 - 0x49000000

@@ -83,7 +83,6 @@ mkdir -p /mnt/
 
 echo "MKFS"
 mkfs.ext4 -q -L x6100root /dev/mapper/$P2
-
 mount -t ext4 /dev/mapper/$P2 /mnt
 
 #--- copy rootfs
@@ -100,6 +99,20 @@ if [ "$UPDATE" = yes ]; then
       cp "$f" "/mnt/$f"
     done
     chmod 0755 "/mnt/$UPDATE_SH"
+  )
+fi
+
+#--- adapt uboot scripts
+PARTUUID=
+eval "$(blkid -o export /dev/mapper/$P2)"
+if [ -z "$PARTUUID" ]; then
+  echo "E: PARTUUID of data partition not found"
+  exit 1
+fi
+if [ -f /mnt/boot/boot.u-boot ]; then
+  ( cd /mnt/boot
+    sed -i -r -e "/setenv[ ]+rootdev / s/rootdev.*/rootdev PARTUUID=$PARTUUID/" boot.u-boot
+    mkimage -A arm -T script -d boot.u-boot boot.scr > /dev/null
   )
 fi
 
