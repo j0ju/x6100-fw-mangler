@@ -3,33 +3,55 @@ PS4='> ${0##*/}[$$]: '
 set -e
 set -x
 
-mount() { /bin/busybox mount "$@"; }
+#- enforce busybox mount
+mount()  { /bin/busybox mount  "$@"; }
+umount() { /bin/busybox umount "$@"; }
 
-# emergency trap
+#- emergency trap
 trap "exec /bin/sh" EXIT
 
+#- mount proc and dev
 mount -t proc proc /proc
 grep " /dev " /proc/mounts > /dev/null || \
   mount -t devtmpfs devtmpfs /dev
 exec < /dev/console > /dev/console 2>&1
 
-eval "$( grep -oE "x6100_multiboot=[^ ]+" /proc/cmdline )"
-if [ ! -d "/$x6100_multiboot" ]; then
-  x6100_multiboot=Default
-fi
+#- helper for init
+init() {
+  eval "$( grep -oE "x6100_multiboot=[^ ]+" /proc/cmdline )"
+  [ -n "/$x6100_multiboot" ] || \
+    x6100_multiboot=Default
+  [ -d "/$x6100_multiboot" ] || \
+    x6100_multiboot=Default
 
-mount -o bind "/$x6100_multiboot" /mnt
-pivot_root /mnt /mnt/mnt
-cd /
+  mount -o bind "/$x6100_multiboot" /mnt
+  pivot_root /mnt /mnt/mnt
+  cd /
 
-mount -t proc proc /proc
-umount /mnt/proc
-mount -o move /mnt/dev /dev || \
-  mount --move /mnt/dev /dev -n
+  mount -t proc proc /proc
+  umount /mnt/proc
+  mount -o move /mnt/dev /dev
 
-exec /bin/sh -e -c " \
-  PS4='> ${0##*/}[\$$]: '; \
-  set -x; \
-  umount /mnt; \
-  exec /sbin/init; \
-" # eo /bin/sh
+  exec /bin/sh -e -c " \
+    PS4='> ${0##*/}[\$$]: '; \
+    set -x; \
+    umount /mnt; \
+    exec /sbin/init; \
+  " # eo /bin/sh
+}
+
+#- execute init accoding to parameter x6100_multiboot on kernel cmdline
+[ -x /flash-emmc.sh ] || \
+  init
+
+#- flash emmc
+#- prepare environment
+PS4='-!- flash[$$]: '
+mount -t tmpfs mediafs /media
+
+#- override poweroff call in ./flash-emmc.sh
+poweroff() {
+  mount
+  #/bin/busybox poweroff -f
+}
+. /flash-emmc.sh

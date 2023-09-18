@@ -29,7 +29,7 @@ build: $(WORK_FILES)
 
 #--- extract filesystems from image
 %.tar: %.img img-mangler/img-to-tar.sh
-	$(E) "IMG2TAR $@ <--- $<"
+	$(E) "IMGtoTAR $@ <--- $<"
 	$(Q) ./bin/D6100 -p -e COMPRESSOR=cat sh $(SHOPT) img-mangler/img-to-tar.sh $< $@
 
 #---- import tar files into img-mangler image
@@ -60,12 +60,12 @@ build: $(WORK_FILES)
 
 #--- extract uboot from image
 %.uboot.img: %.img
-	$(E) "UPDATE IMG $@"
+	$(E) "UBOOT $@"
 	$(Q) ./bin/D6100 dd if=$< of=$@ bs=1024 skip=8 count=640 status=none
 
 #--- generate a known good uboot
 uboot.img: X6100-1.1.7.1.update.uboot.img
-	$(E) "IMAGE $@"
+	$(E) "UBOOT $@"
 	$(Q) cat $< > $@
 
 .deps/%.volume:

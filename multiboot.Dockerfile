@@ -31,6 +31,7 @@ FROM x6100:img-mangler
   RUN set -ex ;\
     mkdir \
       /target/proc \
+      /target/etc \
       /target/dev \
       /target/bin \
       /target/tmp \
@@ -39,6 +40,7 @@ FROM x6100:img-mangler
       ;\
     ln -s . /target/usr ;\
     ln -s bin /target/sbin ;\
+    ln -s ../proc/self/mounts /target/etc/mtab ;\
     for p in /tarballs/*.tar.gz; do \
       [ -r "$p" ] || continue ;\
       tar xzf "$p" -C /target ;\

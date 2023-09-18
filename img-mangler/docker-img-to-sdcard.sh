@@ -39,12 +39,13 @@ IMAGE_SIZE_KB=$(( ( IMAGE_SIZE_KB / ROUND_UP_KB +1 ) * ROUND_UP_KB ))
 IMAGE="$1"
 
 : > $IMAGE
+echo "UBOOT install"
 #--- write uboot for sdcard boot
 dd if=uboot.img bs=1024 seek=8 of=$IMAGE status=none
 #--- generate sparse image
 dd if=/dev/zero bs=1024 count=0 seek=$IMAGE_SIZE_KB of=$IMAGE status=none
 #--- partition it
-echo "PARTITION"
+echo "FDISK"
 sfdisk $IMAGE > /dev/null <<EOF
   label: dos
   2: type=83 start=2048 bootable
@@ -104,6 +105,7 @@ fi
 
 #--- adapt uboot scripts
 PARTUUID=
+echo "UBOOT generate config"
 eval "$(blkid -o export /dev/mapper/$P2)"
 if [ -z "$PARTUUID" ]; then
   echo "E: PARTUUID of data partition not found"

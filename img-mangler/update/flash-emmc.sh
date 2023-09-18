@@ -9,7 +9,7 @@ exec 5<>/dev/tty0
 >&5 clear
 
 #TODO:
-#  * backup previous data for restore
+#  * backup previous data for later restore
 #  * restore backups
 
 >&5 echo "UBOOT $DEV"
@@ -43,7 +43,6 @@ tar   cf - -C /media/orig   .  | \
 find /media/target -name "*.${0##*/}" -type f | while read f; do
   mv "$f" "${f%.${0##*/}}"
 done
-
 
 >&5 echo "UPDATE UBOOT SCRIPT $PART $PARTUUID"
 ( cd /media/target/boot
