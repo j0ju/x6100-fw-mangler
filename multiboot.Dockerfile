@@ -3,13 +3,14 @@ FROM x6100:Opt.Alpine.3.18 AS alpine
   env ALPINE_BINARIES " \
     busybox \
     sfdisk \
+    mkimage \
+    blkid \
+    wipefs \
+    mkfs.ext4 \
   "
 
   # create tarballs from binaries
   RUN set -ex ; \
-    : --- install packages ;\
-      apk add \
-        sfdisk ;\
     : --- dump of tarballs ;\
       rm -rf /tarballs ;\
       mkdir /tarballs ;\
@@ -28,6 +29,16 @@ FROM x6100:img-mangler
 
   COPY --from=alpine /tarballs /tarballs
   RUN set -ex ;\
+    mkdir \
+      /target/proc \
+      /target/dev \
+      /target/bin \
+      /target/tmp \
+      /target/sys \
+      /target/mnt \
+      ;\
+    ln -s . /target/usr ;\
+    ln -s bin /target/sbin ;\
     for p in /tarballs/*.tar.gz; do \
       [ -r "$p" ] || continue ;\
       tar xzf "$p" -C /target ;\
@@ -42,7 +53,15 @@ FROM x6100:img-mangler
     done ;\
    : # eo RUN
 
-  COPY --from=xiegu /target /target/xiegu
-  COPY --from=r1cbu /target /target/r1cbu
+  COPY --from=xiegu /target /target/Xiegu
+  COPY --from=r1cbu /target /target/R1CBU
+
+  RUN set -ex ;\
+    cd /target ;\
+    ln -s Xiegu Default ;\
+    ln -s R1CBU Button1 ;\
+    ln -s Xiegu Button2 ;\
+    ln -s Xiegu Button3 ;\
+  : # eo RUN
 
 # vim: foldmethod=indent
