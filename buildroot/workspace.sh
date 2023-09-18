@@ -2,7 +2,7 @@
 
 #--- settings
   set -e
-  set -x
+  #set -x
 
   BUILDROOT_GIT=https://github.com/buildroot/buildroot.git
   #BUILDROOT_GITREV=tags/2022.11.3
@@ -19,12 +19,14 @@
   mkdir -p /workspace
   cd /workspace
 
+  echo "GIT $PWD/AetherX6100Buildroot $X6100_BR_GIT"
   [ -d AetherX6100Buildroot/.git ] || \
     git clone $X6100_BR_GIT
   cd AetherX6100Buildroot
   git co local || \
     git co -b local $X6100_BR_GITREV
 
+  echo "GIT $PWD/AetherX6100Buildroot/buildroot $BUILDROOT_GIT"
   cd buildroot
   [ -d .git ] || \
     git clone $BUILDROOT_GIT .
@@ -32,6 +34,7 @@
     git co -b local $BUILDROOT_GITREV
 
   cd /workspace
+  echo "GIT $PWD/x6100_gui $X6100_GIT"
   [ -d x6100_gui/.git ] || \
     git clone $X6100_GIT
   cd x6100_gui
@@ -40,6 +43,7 @@
 
 #--- prepare repos for building
   cd /workspace/AetherX6100Buildroot
+  echo "PREPARE BUILDROOT $PWD"
   if [ ! -f build/Makefile ]; then
     cp /src/buildroot/sun8i-r16-x6100_defconfig /workspace/AetherX6100Buildroot/br2_external/board/X6100/linux
     cp /src/buildroot/X6100_defconfig           /workspace/AetherX6100Buildroot/br2_external/configs/X6100_defconfig

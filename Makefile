@@ -29,38 +29,38 @@ build: $(WORK_FILES)
 
 #--- extract filesystems from image
 %.tar: %.img img-mangler/img-to-tar.sh
-	$(E) "TAR $@ <--- $<"
+	$(E) "IMG2TAR $@ <--- $<"
 	$(Q) ./bin/D6100 -p -e COMPRESSOR=cat sh $(SHOPT) img-mangler/img-to-tar.sh $< $@
 
 #---- import tar files into img-mangler image
 .deps/%.built: %.tar Makefile ./img-mangler/tar-import.sh
-	$(E) "IMAGE $(NAME_PFX)$(NAME):$(<:.tar=) <--- $<"
+	$(E) "IMPORT $(NAME_PFX)$(NAME):$(<:.tar=) <--- $<"
 	$(Q) ./img-mangler/tar-import.sh $< $(NAME_PFX)$(NAME):$(<:.tar=)
 	$(Q) : > "$@"
 
 .deps/%.built: %.tgz Makefile ./img-mangler/tar-import.sh
-	$(E) "IMAGE $(NAME_PFX)$(NAME):$(<:.tar=) <--- $<"
+	$(E) "IMPORT $(NAME_PFX)$(NAME):$(<:.tar=) <--- $<"
 	$(Q) ./img-mangler/tar-import.sh $< $(NAME_PFX)$(NAME):$(<:.tgz=)
 	$(Q) : > "$@"
 
 #--- export mangled rootfs to tar
 %.rootfs.tar.gz: .deps/%.built Makefile
-	$(E) "TAR $@"
+	$(E) "ROOTFS $@"
 	$(Q) ./bin/D6100 --image $(NAME_PFX)$(NAME):$(@:.rootfs.tar.gz=) tar czf - -C /target . >$@
 
 #--- build a SDcard bootable image
 %.sdcard.img: .deps/%.built Makefile ./img-mangler/docker-img-to-sdcard.sh uboot.img
-	$(E) "IMAGE $@"
+	$(E) "IMG $@"
 	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.sdcard.img=) sh $(SHOPT) img-mangler/docker-img-to-sdcard.sh $@
 
 #--- build an update image
 %.update.img: .deps/%.built Makefile ./img-mangler/docker-img-to-sdcard.sh uboot.img
-	$(E) "IMAGE $@"
+	$(E) "IMG $@"
 	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.update.img=) sh $(SHOPT) img-mangler/docker-img-to-sdcard.sh --update $@
 
 #--- extract uboot from image
 %.uboot.img: %.img
-	$(E) "IMAGE $@"
+	$(E) "UPDATE IMG $@"
 	$(Q) ./bin/D6100 dd if=$< of=$@ bs=1024 skip=8 count=640 status=none
 
 #--- generate a known good uboot
@@ -76,7 +76,8 @@ uboot.img: X6100-1.1.7.1.update.uboot.img
 		  docker volume create $$image > $@
 
 .deps/%.built: %/workspace.sh .deps/img-mangler.built .deps/%.volume
-	./bin/D6100 -v $(NAME_PFX)$(NAME)-buildroot:/workspace sh $< > $@
+	$(E) "WORKSPACE %(<:/workspace.sh=)"
+	$(Q) ./bin/D6100 -v $(NAME_PFX)$(NAME)-buildroot:/workspace sh $< > $@
 
 #--- extend clean-local target
 clean-local: clean-volumes

@@ -3,7 +3,22 @@
 
 #DOCKER_IMAGES :=
 #DOCKER_IMAGES += v1.1.7-modded
-#DOCKER_IMAGES += R1CBU-builder
+#DOCKER_IMAGES += r1cbu-v0.17.1-modded
 
 #WORK_FILES :=
 #WORK_FILES += v1.1.7-modded.sdcard.img
+#WORK_FILES += v1.1.7-modded.update.img
+#WORK_FILES += r1cbu-v0.17.1-modded.sdcard.img
+#WORK_FILES += r1cbu-v0.17.1-modded.update.img
+#WORK_FILES += multiboot.sdcard.img
+#WORK_FILES += multiboot.update.img
+
+# this will initially build the buildroot volume and prepare the buildroot environment
+#WORK_FILES += .deps/buildroot.built
+
+# Workaround for sources from the web behind a captcha
+#FILENAME.zip:  /OUTSIDE/OF/TREE/../RELATIVE/OR/ABSOLUTE/FILE.zip
+#X6100-1.1.7.1.update.zip:  ../x6100-dumps/x6100udimg-v1.1.7-230831001.zip
+#	cat $< > $@
+#
+# vim: noet ts=2 sw=2 ft=Makefile

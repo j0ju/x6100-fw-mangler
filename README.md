@@ -15,7 +15,9 @@
  * integrates some more helper utils from Alpine into stock images
 
 ## `Don't`s
- No warranty, I will not be responsible for what ever you do with this images, they migh break your device, be sane and think.
+ No warranty, I will not be responsible for what ever you do with these generated images.
+ They might break your device, be warned.
+ Only transmit in frequency ranges you are allowed to transmit, check for a clean HF of your device.
  I advise not distributing images generated this way, they contain copyrighted material.
 
 # Requirements
@@ -34,9 +36,33 @@
 
 ## Docker
 
+ General usage
+
  * `make` - generates all Docker images
  * `make url` - Downloads all SDCard and update images
  * `make clean` - cleans up the directory
+
+### Images
+
+#### tl:dr Workflow
+
+ * Archiv -> Image -> TarDump -> Dockerimage --> ... modding --> desired state of /target in image
+ * Dockerimage `Name` --> `name.sdcard.img`
+ * Dockerimage `Name` --> `name.update.img`
+
+ eg.
+ * `make v1.1.7-modded.sdcard.img` - generates a modded image of the original Xiegu Firmware
+ * `make r1cbu-v0.17.1-modded.sdcard.img` - the same for the R1CBU OpenSource firmware
+ * `make v1.1.7-modded.update.img` - generates a update image for installing it into the devies's eMMC
+ * `make r1cbu-v0.17.1-modded.update.img` - the same for the R1CBU OpenSource firmware
+ 
+#### Patches
+
+ The modded Xiegu image includes this patches:
+ * patch https://github.com/busysteve/X6100-Bluetooth-Audio
+
+### ./config and ./config.example
+ ...
 
 ### Under the hood
 
@@ -58,10 +84,16 @@
  * D6100 - enter the mangling docker container with the source tree mounted in /src
  * binfmt-helper - this install qemu-user-static and some binfmt signatures to enable running arm code on your workstation for development
 
+## You have a fresh unknown image and wants to inspect its contents?
+
+ * copy it to unknown-beauty.img into this directory
+ * type `make unknown-beauty.tar`
+
+ This depacks the image to the tar file `unknown-beauty.tar` for easier use.
+
 # Plans
 
- * patch https://github.com/busysteve/X6100-Bluetooth-Audio
- * patch FONT
+ * patch LED colour
  * generate runable image with GUI selection Original + R1BCU with hotkey selection in u-boot from https://github.com/Links2004/x6100-armbian
  * use stripped down version of ansible-openwrt (https://github.com/gekmihesg/ansible-openwrt) to configure or modify an running system on a X6100.
 
