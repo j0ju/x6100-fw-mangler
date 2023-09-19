@@ -1,3 +1,4 @@
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 FROM x6100:R1CBU-v0.17.1.sdcard
 
 RUN set -ex ;\

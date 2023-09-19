@@ -1,3 +1,4 @@
 #!/bin/sh
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 
 ./bin/D6100 -p --pid-host /bin/sh ./img-mangler/binfmt-helper.sh "${1:-register}"

@@ -1,4 +1,5 @@
 # - /etc/profile -
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 
 export PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 

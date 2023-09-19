@@ -1,3 +1,4 @@
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 FROM x6100:Alpine-armhf-3.18 AS source
 
 FROM scratch
@@ -44,6 +45,7 @@ ENV PKGS=" \
   rsync \
   wipefs \
   bash-completion iproute2-bash-completion procs-bash-completion util-linux-bash-completion mtr-bash-completion \
+  blkid \
 "
 
 # install packages

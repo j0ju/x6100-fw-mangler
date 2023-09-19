@@ -1,4 +1,5 @@
 # /etc/profile.d/Serial-PS1.sh
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 
 # check whether we are on a serial tty and if so, add terminal resizing tweak to PS1
 case "$(tty)" in

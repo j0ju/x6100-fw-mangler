@@ -1,4 +1,5 @@
 #!/bin/sh
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 
 #--- settings
   set -e

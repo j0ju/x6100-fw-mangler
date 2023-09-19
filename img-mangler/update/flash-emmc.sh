@@ -1,12 +1,17 @@
 #!/bin/sh
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
+
 set -e
 set -x
 
 DEV=/dev/mmcblk2
-PART=/dev/mmcblk2p2
+PARTNO=2
+PART="${DEV}p$PARTNO"
 
 exec 5<>/dev/tty0
 >&5 clear
+
+>&5 echo "-- FLASH $DEV --"
 
 #TODO:
 #  * backup previous data for later restore
@@ -23,9 +28,15 @@ EOF
 >&5 echo "MKFS $DEV"
 mkfs.ext4 -q -F -L x6100 "$PART"
 PARTUUID=
+PTUUID=
 eval "$(blkid -o export "$PART")"
 if [ -z "$PARTUUID" ]; then
-  >&5 echo "E: PARTUUID of data partition not found"
+  eval "$(blkid -o export "$DEV")"
+  [ -z "$PTUUID" ] || \
+    PARTUUID="$PTUUID-$(printf %02d $PARTNO)"
+fi
+if [ -z "$PARTUUID" ]; then
+  >&5 echo "E: PARTUUID of data partition not found, ABORT"
   exit 1
 fi
 
@@ -53,7 +64,7 @@ done
 #TODO:
 #  * backup and restore prev data
 
-rm -f /media/target/"$0"
+rm -f /media/target/flash-emmc.sh
 
 df /media/target
 >&5 df /media/target

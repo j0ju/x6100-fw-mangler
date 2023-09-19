@@ -1,3 +1,7 @@
+#!/bin/sh
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
+set -e
+
 BIN="$1"
 OUTPUT_DIR="$2"
 

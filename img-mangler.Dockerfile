@@ -1,3 +1,4 @@
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 FROM debian:bookworm-slim
 
 ENV \
