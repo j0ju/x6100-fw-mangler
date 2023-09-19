@@ -1,3 +1,4 @@
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 FROM x6100:v1.1.7-opt-alpine
 
 RUN set -ex ;\
@@ -6,11 +7,11 @@ RUN set -ex ;\
 
 COPY xiegu.mods /tmp/mods
 
-RUN set -ex ;\
-  : ----- install bluetooth hack ; \
-    git clone https://github.com/busysteve/X6100-Bluetooth-Audio.git /target/tmp/bthack ;\
-    chroot /target sh -x -c "cd /tmp/bthack; . ./install.sh" ;\
-    rm -rf /tmp/bthack
+# ----- install bluetooth stream hack ; \
+#RUN set -ex ;\
+#    git clone https://github.com/busysteve/X6100-Bluetooth-Audio.git /target/tmp/bthack ;\
+#    chroot /target sh -x -c "cd /tmp/bthack; . ./install.sh" ;\
+#    rm -rf /tmp/bthack
 
 RUN set -ex ;\
   : ----- rework init system a bit ; \
@@ -54,6 +55,7 @@ RUN set -ex ;\
       /target/usr/app_qt/x6100_ui_v100.$$       \
       /tmp/mods/x6100_ui_v100/$SHA1SUM.bsdiff40 ;\
     mv /target/usr/app_qt/x6100_ui_v100.$$ /target/usr/app_qt/x6100_ui_v100 ;\
+    chmod 0755 /target/usr/app_qt/x6100_ui_v100 ;\
   fi ;\
   :
 
@@ -77,6 +79,8 @@ RUN set -ex ;\
 RUN set -ex ;\
   : ----- cleanup  ;\
     find /target/etc -name "*.old" -delete ;\
+    find /target/etc -name "*-" -delete ;\
+    rmdir /target/etc/* || :;\
     rm -rf \
       /target/etc/rsyncd.conf \
       /target/etc/logrotate.d \
