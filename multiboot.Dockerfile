@@ -1,3 +1,4 @@
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 FROM x6100:Opt.Alpine.3.18 AS alpine
 
   env ALPINE_BINARIES " \
@@ -7,6 +8,7 @@ FROM x6100:Opt.Alpine.3.18 AS alpine
     blkid \
     wipefs \
     mkfs.ext4 \
+    mke2fs \
   "
 
   # create tarballs from binaries
@@ -37,6 +39,7 @@ FROM x6100:img-mangler
       /target/tmp \
       /target/sys \
       /target/mnt \
+      /target/media \
       ;\
     ln -s . /target/usr ;\
     ln -s bin /target/sbin ;\

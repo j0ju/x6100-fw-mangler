@@ -1,4 +1,5 @@
 # UBoot boot script for X6100
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 
 setenv rootdev PARTUUID=
 
