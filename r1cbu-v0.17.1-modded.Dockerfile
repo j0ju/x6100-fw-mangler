@@ -4,7 +4,7 @@ RUN set -ex ;\
   rm -f /target/linuxrc ;\
   : #
 
-COPY r1cbu.mods/filesystem /tmp/mods
+COPY r1cbu.mods /tmp/mods
 
 RUN set -ex ;\
   : ----- rework init system a bit ; \
@@ -24,7 +24,7 @@ RUN set -ex ;\
     mkdir /target/etc/rc.d/disabled ;\
     : TODO ;\
   : ----- add fs modifications ;\
-    cd /tmp/mods ;\
+    cd /tmp/mods/filesystem ;\
     find . ! -type d | while read f; do \
       rm -f "/target/$f" ;\
       mkdir -p "/target/${f%/*}" ;\
@@ -38,10 +38,6 @@ RUN set -ex ;\
     ( echo "x6100"; echo "x6100"; echo ) | chroot /target passwd root ;\
   : ----- set shell to /bin/bash ;\
     sed -i -e '/^root/ s|/bin/sh|/bin/bash|' /target/etc/passwd ;\
-  : ----- generate new boot script ;\
-    ( cd /target/boot ;\
-      mkimage -A arm -T script -d boot.u-boot boot.scr ;\
-    ) ;\
   : ----- cleanup  ;\
     find /target/etc -name "*.old" -delete ;\
     rm -rf \

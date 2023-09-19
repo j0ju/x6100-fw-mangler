@@ -76,7 +76,7 @@ uboot.img: X6100-1.1.7.1.update.uboot.img
 		  docker volume create $$image > $@
 
 .deps/%.built: %/workspace.sh .deps/img-mangler.built .deps/%.volume
-	$(E) "WORKSPACE %(<:/workspace.sh=)"
+	$(E) "WORKSPACE $(<:/workspace.sh=)"
 	$(Q) ./bin/D6100 -v $(NAME_PFX)$(NAME)-buildroot:/workspace sh $< > $@
 
 #--- extend clean-local target
