@@ -41,6 +41,7 @@ ENV PKGS=" \
   strace ltrace lsof \
   coreutils \
   tmux screen minicom \
+  linuxconsoletools \
   jq \
   rsync \
   wipefs \

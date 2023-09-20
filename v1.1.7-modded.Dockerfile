@@ -67,6 +67,9 @@ RUN set -ex ;\
     mv -f /target/etc/udev/rules.d/*-auto-mount.rules /target/etc/udev/rules.d/disabled ;\
   : ----- remove GPIB IEEE488 development leftovers ;\
     grep gpib /target//etc/udev/rules.d/*.rules -l | xargs rm -f ;\
+    rm -rf \
+      /target/usr/share/linux-gpib-user \
+      ;\
   :
 
 RUN set -ex ;\
@@ -80,7 +83,7 @@ RUN set -ex ;\
   : ----- cleanup  ;\
     find /target/etc -name "*.old" -delete ;\
     find /target/etc -name "*-" -delete ;\
-    rmdir /target/etc/* || :;\
+    rmdir /target/etc/* 2> /dev/null || :;\
     rm -rf \
       /target/etc/rsyncd.conf \
       /target/etc/logrotate.d \
