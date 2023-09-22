@@ -1,6 +1,18 @@
 # (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 FROM x6100:Alpine-armhf-3.18 AS source
 
+# This docker file generates a modified Alpine Linux. 
+#
+# The most important (dirty hack!) patch is moving the libary search path to /opt/alpine/lib, 
+# so we relocate coliding libraries from Alpines Userland.
+#
+# Aftwards it dumps specific binaries and packages to tarballs, that can
+# later be extracted without conflicts to the Userland of Xiegu or R1CBU
+# assuming that we add only software that is not present in the original
+# image.
+#
+
+
 FROM scratch
 COPY --from=source /target/ /
 

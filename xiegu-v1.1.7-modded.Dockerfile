@@ -1,5 +1,5 @@
 # (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
-FROM x6100:v1.1.7-opt-alpine
+FROM x6100:xiegu-v1.1.7-opt-alpine
 
 RUN set -ex ;\
   rm -f /target/linuxrc ;\

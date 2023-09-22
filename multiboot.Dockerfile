@@ -21,7 +21,7 @@ FROM x6100:Opt.Alpine.3.18 AS alpine
       done; \
   : # eo RUN
 
-FROM x6100:v1.1.7-modded AS xiegu
+FROM x6100:xiegu-v1.1.7-modded AS xiegu
 
 FROM x6100:r1cbu-v0.17.1-modded AS r1cbu
 

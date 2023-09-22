@@ -20,6 +20,15 @@
  Only transmit in frequency ranges you are allowed to transmit, check for a clean HF of your device.
  I advise not distributing images generated this way, they contain copyrighted material.
 
+# Quickstart
+
+ * Install the software on your system listed in the Requirements section below.
+ * copy `./config.example` to `./config`
+ * edit `config` with your favorite editor
+ * comment out the images you want to experiment with, I suggest starting with the `sdcard` images.
+ * save the file and exit editor
+ * type `make`
+
 # Requirements
  * Docker
  * `qemu-user-static` with a proper `binfmt` config, although if not available un your platform there is a small helper in the tools section.
@@ -30,7 +39,8 @@
  With Rancher Desktop you might need to execute the script `bin/binfmt-helper` before it works.
 
 ## Ubuntu/Debian
- * Docker Community edition
+ * Docker, ideally Community edition
+ * build-essentials, make
  * ...
 
 # Usage
@@ -45,9 +55,9 @@
 
 ### Images
 
- * v1.1.7-modded - Xiegu orignal patched, add more userland tools to rootfs
- * r1cbu-v0.17.1-modded - alternative of R1CBU, rootfs extended
- * multiboot - boots per default v1.1.7-modded, If you keep the left-most-button pressed until you see a changed boot logo of the R1CBU firmware to boot it.
+ * `xieug-v1.1.7-modded` - Xiegu orignal patched, add more userland tools to rootfs
+ * `r1cbu-v0.17.1-modded` - alternative of R1CBU, rootfs extended
+ * `multiboot` - boots per default v1.1.7-modded, If you keep the left-most-button pressed until you see a changed boot logo of the R1CBU firmware to boot it.
 
 
 #### tl:dr Workflow
@@ -57,7 +67,7 @@
  * Dockerimage `Name` --> `name.update.img`
 
  eg.
- * `make v1.1.7-modded.sdcard.img` - generates a modded image of the original Xiegu Firmware
+ * `make xiegu-v1.1.7-modded.sdcard.img` - generates a modded image of the original Xiegu Firmware
  * `make r1cbu-v0.17.1-modded.sdcard.img` - the same for the R1CBU OpenSource firmware
 
  * `make v1.1.7-modded.update.img` - generates a update image for installing it into the devies's eMMC

@@ -30,9 +30,4 @@ RUN set -ex ;\
       set +e ;\
       . ./install_emmc.sh ;\
     "
-
-
-
-
-
 CMD rm -f /target/etc/resolv.conf; cp /etc/resolv.conf /target/etc/resolv.conf; exec env HOME=/root SHELL=/bin/bash chroot /target /bin/bash -l
