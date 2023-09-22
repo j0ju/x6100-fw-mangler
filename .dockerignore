@@ -1,5 +1,6 @@
 .deps
 .git
+.venv
 config
 
 *.img
