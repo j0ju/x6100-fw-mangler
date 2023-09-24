@@ -7,9 +7,7 @@ DEP_DIR="$PREFIX/.deps"
 BUILT_FLAG="$DEP_DIR/img-mangler.built"
 IMAGE=x6100:img-mangler
 WORKDIR=/src
-
-[ -f "$BUILT_FLAG" ] || \
-  make img-mangler
+MODE=exec
 
 OPTS=
 OPTS="$OPTS --rm"
@@ -52,10 +50,23 @@ while [ -n "$1" ]; do # eval until the first unknown argument
       shift
       shift
       ;;
+    list | ls | l )
+      MODE=list
+      break
+      ;;
     * )
       break
       ;;
   esac
 done
 
-eval "docker run --rm -v $PWD:/src -w '$WORKDIR' -e 'OWNER=$(id -u)' -e 'GROUP=$(id -g)' $OPTS '$IMAGE' \"\$@\""
+case "$MODE" in
+  exec )
+    [ -f "$BUILT_FLAG" ] || \
+      make img-mangler
+    eval "exec docker run --rm -v $PWD:/src -w '$WORKDIR' -e 'OWNER=$(id -u)' -e 'GROUP=$(id -g)' $OPTS '$IMAGE' \"\$@\""
+    ;;
+  list )
+    docker image ls | awk '$1 ~ "^(REPO|x6100)"'
+    ;;
+esac
