@@ -79,13 +79,22 @@
 #### Patches
 
  The modded Xiegu image includes this patches:
- * patch https://github.com/busysteve/X6100-Bluetooth-Audio - disable for now
  * added a bluetoothd startup script from https://github.com/strijar/x6100_bt_patch
  * the GUI APP for v1.1.7.1 is colour patched - cyan text colour instead of red (thx to DB2ZW)
  * disable automounting of random USB or MMC hotplug devices for now
+ * enable bash as standard shell
+ * add serial console helpers to copy with different sized terminal emulator, no more 80x24 if your terminal app behaves
 
-### ./config and ./config.example
- ...
+ Disabled for now:
+ * patch https://github.com/busysteve/X6100-Bluetooth-Audio
+
+### `./config` and `./config.example`
+ `./config` is a preseed for different settings:
+ * which images to build and
+ * what config to include into into the images.
+ It is not tracked by git.
+
+ `./config.examle` is a small example with some comments.
 
 ### Under the hood
 
@@ -115,6 +124,24 @@
  * type `make unknown-beauty.tar`
 
  This depacks the image to the tar file `unknown-beauty.tar` for easier use.
+
+# General X6100 help
+
+## WiFi
+
+How to connect to a WiFi via the serial console:
+``` sh
+nmcli device wifi con WLANNAME password XXXXXXXXX
+```
+
+The X6100 is found to have issues with WPA3 personal (SAE) in some environments. This can be disabled Und für diejenigen welchen WPA3 nicht geht, auf WPA2 umschalten:
+```
+nmcli conn edit WLANNAME << EOF
+  set wifi-sec.key-mgmt wpa-psk
+EOF
+nmcli conn down WLANNAME
+nmcli conn up WLANNAME
+```
 
 # Plans
 
