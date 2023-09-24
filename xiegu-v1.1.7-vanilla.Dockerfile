@@ -1,5 +1,5 @@
 # (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
-FROM x6100:X6100-1.1.7.1.update
+FROM x6100:Xiegu-1.1.7.1.update
 
 # extract update tarball to /
 RUN set -ex ;\
