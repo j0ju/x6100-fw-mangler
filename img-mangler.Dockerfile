@@ -43,7 +43,7 @@ RUN set -e; \
       git \
       build-essential libncurses-dev \
       rsync bc cmake bzip2 \
-      bspatch bsdiff \
+      bspatch bsdiff hexer bbe \
       ; \
     echo 'case $- in *i*) . /etc/bash_completion ;; esac' >> /etc/bash.bashrc ;\
     sh /lib/cleanup-rootfs.sh

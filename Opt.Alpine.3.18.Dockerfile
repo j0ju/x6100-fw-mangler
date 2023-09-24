@@ -24,12 +24,14 @@ ENV REQ_PKGS=" \
   sed file \
   multipath-tools \
   sfdisk \
+  blkid \
 "
 
 ENV BINPKGS=" \
   mkimage \
   ss \
   nsenter unshare \
+  sfdisk \
 "
 #  kpartx \
 
@@ -44,7 +46,6 @@ ENV PKGS=" \
   file libmagic \
   sed \
   vim vim-common lua5.4 \
-  helix \
   mc \
   curl wget \
   git \
@@ -58,7 +59,6 @@ ENV PKGS=" \
   rsync \
   wipefs \
   bash-completion iproute2-bash-completion procs-bash-completion util-linux-bash-completion mtr-bash-completion \
-  blkid \
 "
 
 # install packages

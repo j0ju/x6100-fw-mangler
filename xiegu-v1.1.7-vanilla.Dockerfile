@@ -29,5 +29,11 @@ RUN set -ex ;\
     : ----- run install script ;\
       set +e ;\
       . ./install_emmc.sh ;\
-    "
+    "; \
+    rm -rf /target/tmp /target/run ;\
+    mkdir /target/tmp /target/run ;\
+    chmod 1777 /target/tmp ;\
+    chmod 0755 /target/run ;\
+  : #
+
 CMD rm -f /target/etc/resolv.conf; cp /etc/resolv.conf /target/etc/resolv.conf; exec env HOME=/root SHELL=/bin/bash chroot /target /bin/bash -l
