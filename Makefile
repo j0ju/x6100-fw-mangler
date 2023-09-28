@@ -62,7 +62,7 @@ build: $(WORK_FILES)
 #--- extract uboot from image
 %.uboot.img: %.img
 	$(E) "UBOOT $@"
-	$(Q) ./bin/D6100 dd if=$< of=$@ bs=1024 skip=8 count=640 status=none
+	$(Q) dd if=$< of=$@ bs=1024 skip=8 count=640 status=none
 
 #--- generate a known good uboot
 uboot.img: Xiegu-1.1.7.1.update.uboot.img
