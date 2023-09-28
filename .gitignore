@@ -1,5 +1,6 @@
 *.pyc
 *.sw*
+.env
 
 .deps
 
@@ -20,6 +21,5 @@
 *.initrd.zst
 *.initrd.zsd
 
-wpa_supplicant.conf
 authorized_keys
 config
