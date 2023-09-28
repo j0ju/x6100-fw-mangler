@@ -17,6 +17,9 @@
 # this will initially build the buildroot volume and prepare the buildroot environment
 #WORK_FILES += .deps/buildroot.built
 
+# keep all image files, even from intermediate steps no longer needed
+#.PRECIOUS: %.img
+
 # Workaround for sources from the web behind a captcha
 #FILENAME.zip:  /OUTSIDE/OF/TREE/../RELATIVE/OR/ABSOLUTE/FILE.zip
 #X6100-1.1.7.1.update.zip:  ../x6100-dumps/x6100udimg-v1.1.7-230831001.zip

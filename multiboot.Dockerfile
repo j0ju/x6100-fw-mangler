@@ -21,10 +21,6 @@ FROM x6100:Opt.Alpine.3.18 AS alpine
       done; \
   : # eo RUN
 
-FROM x6100:xiegu-v1.1.7-modded AS xiegu
-
-FROM x6100:r1cbu-v0.17.1-modded AS r1cbu
-
 FROM x6100:img-mangler
 
   COPY multiboot /tmp/mods
@@ -46,7 +42,7 @@ FROM x6100:img-mangler
     ln -s ../proc/self/mounts /target/etc/mtab ;\
     for p in /tarballs/*.tar.gz; do \
       [ -r "$p" ] || continue ;\
-      tar xzf "$p" -C /target ;\
+      tar xzf "$p" -C /target/ ;\
     done ;\
     chroot /target/ /bin/busybox --install -s /bin ;\
     : ;\
@@ -58,15 +54,16 @@ FROM x6100:img-mangler
     done ;\
    : # eo RUN
 
-  COPY --from=xiegu /target /target/Xiegu
-  COPY --from=r1cbu /target /target/R1CBU
-
-  RUN set -ex ;\
-    cd /target ;\
-    ln -s Xiegu Default ;\
-    ln -s R1CBU Button1 ;\
-    ln -s Xiegu Button2 ;\
-    ln -s Xiegu Button3 ;\
-  : # eo RUN
+# if in multiboot image /$x6100_multiboot/ has no /boot with kernel and .dtb
+# the generated image will fail and fall back to boot rom eMMC.
+#
+# ----- EXAMPLE
+  #RUN set -ex ;\
+  #  cd /target ;\
+  #  ln -s Xiegu Default ;\
+  #  ln -s R1CBU Button1 ;\
+  #  ln -s armbian Button2 ;\
+  #  ln -s YetAnother Button3 ;\
+  #: # eo RUN
 
 # vim: foldmethod=indent

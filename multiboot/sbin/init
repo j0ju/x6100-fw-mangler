@@ -5,6 +5,11 @@ PS4='> ${0##*/}[$$]: '
 set -e
 set -x
 
+#- if not run as pid 1, pass to busybox init
+  if [ ! $$ = 1 ]; then
+    exec /bin/busybox init "$@"
+  fi
+
 #- enforce busybox mount
   mount()  { /bin/busybox mount  "$@"; }
   umount() { /bin/busybox umount "$@"; }
@@ -23,16 +28,21 @@ set -x
     eval "$( grep -oE "x6100_multiboot=[^ ]+" /proc/cmdline )"
     [ -n "/$x6100_multiboot" ] || \
       x6100_multiboot=Default
-   [ -d "/$x6100_multiboot" ] || \
+    [ -d "/$x6100_multiboot" ] || \
       x6100_multiboot=Default
 
-     mount -o bind "/$x6100_multiboot" /mnt
-     pivot_root /mnt /mnt/mnt
-     cd /
+    if [ ! -d "/$x6100_multiboot" ]; then
+      echo "E: boot target $x6100_multiboot does not exist, dropping to emergency shell." >&2
+      exit 1
+    fi
 
-     mount -t proc proc /proc
-     umount /mnt/proc
-     mount -o move /mnt/dev /dev
+    mount -o bind "/$x6100_multiboot" /mnt
+    pivot_root /mnt /mnt/mnt
+    cd /
+
+    mount -t proc proc /proc
+    umount /mnt/proc
+    mount -o move /mnt/dev /dev
 
     exec /bin/sh -e -c " \
       PS4='> ${0##*/}[\$$]: '; \
@@ -42,7 +52,7 @@ set -x
       exec /sbin/init; \
     " # eo /bin/sh
 
-    echo "E: his sdhould not have happened, dropping to emergency shell." >&2
+    echo "E: this should not have happened, dropping to emergency shell." >&2
     exit 1
   }
 
@@ -58,6 +68,7 @@ set -x
 #- override poweroff call in ./flash-emmc.sh
   poweroff() {
     set +e
+    sync
     grep /dev/ /proc/mounts | while read what where _; do 
       mount -o remount -r $where || :
     done
