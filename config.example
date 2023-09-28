@@ -12,7 +12,10 @@
 #WORK_FILES += r1cbu-v0.17.1-modded.sdcard.img
 #WORK_FILES += r1cbu-v0.17.1-modded.update.img
 #WORK_FILES += multiboot.sdcard.img
-#WORK_FILES += multiboot.update.img
+#WORK_FILES += multiboot-vanilla.sdcard.img
+#WORK_FILES += multiboot-vanilla.update.img
+#WORK_FILES += multiboot-modded.sdcard.img
+#WORK_FILES += multiboot-modded.update.img
 
 # this will initially build the buildroot volume and prepare the buildroot environment
 #WORK_FILES += .deps/buildroot.built
