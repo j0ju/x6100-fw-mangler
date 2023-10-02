@@ -28,6 +28,10 @@ build: $(WORK_FILES)
 	$(Q) ./bin/D6100 sh $(SHOPT) img-mangler/unzip-img.sh $< $@
 	$(Q) touch $@
 
+%.img: %.img.xz
+	$(E) "UNPACK $@ <--- $<"
+	$(Q) xz -cd < $< > $@
+
 #--- extract filesystems from image
 %.tar: %.img img-mangler/img-to-tar.sh
 	$(E) "IMGtoTAR $@ <--- $<"
