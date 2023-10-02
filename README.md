@@ -55,9 +55,12 @@
 
 ### Images
 
- * `xieug-v1.1.7-modded` - Xiegu orignal patched, add more userland tools to rootfs
+ * `xiegu-v1.1.7-vanilla` - Xiegu orignal
+ * `r1cbu-v0.17.1-vanilla` - alternative of R1CBU
+ * `xiegu-v1.1.7-modded` - Xiegu orignal patched, add more userland tools to rootfs
  * `r1cbu-v0.17.1-modded` - alternative of R1CBU, rootfs extended
- * `multiboot` - boots per default v1.1.7-modded, If you keep the left-most-button pressed until you see a changed boot logo of the R1CBU firmware to boot it.
+ * `multiboot-vanilla` - boots per default v1.1.7-vanilla, If you keep the left-most-button pressed until you see a changed boot logo of the R1CBU firmware to boot it.
+ * `multiboot-modded` - boots per default v1.1.7-modded, If you keep the left-most-button pressed until you see a changed boot logo of the R1CBU firmware to boot it.
 
 
 #### tl:dr Workflow
@@ -73,8 +76,8 @@
  * `make v1.1.7-modded.update.img` - generates a update image for installing it into the devies's eMMC
  * `make r1cbu-v0.17.1-modded.update.img` - the same for the R1CBU OpenSource firmware
 
- * `make multiboot.sdcard.img` - this is an image with latest Xiegu and R1CBU Firmware in one. 
- * `make multiboot.update.img` - the same but for writing on the eMMC
+ * `make multiboot-modded.sdcard.img` - this is an image with latest Xiegu and R1CBU Firmware in one.
+ * `make multiboot-modded.update.img` - the same but for writing on the eMMC
 
 #### Patches
 
