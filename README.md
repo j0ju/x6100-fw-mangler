@@ -10,7 +10,7 @@
  * ease debugging
 
 ## Features
- * generates a runable SDCard image with some modidications with an new partition layout
+ * generates a runable SDCard image with some modifications with an new partition layout
  * generates a runable update image on SDCard with some modifications with a new partition layout
  * integrates some more helper utils from Alpine into stock images
 
@@ -139,12 +139,30 @@ nmcli device wifi con WLANNAME password XXXXXXXXX
 
 The X6100 is found to have issues with WPA3 personal (SAE) in some environments. This can be disabled Und für diejenigen welchen WPA3 nicht geht, auf WPA2 umschalten:
 ```
+nmcli conn down WLANNAME
 nmcli conn edit WLANNAME << EOF
   set wifi-sec.key-mgmt wpa-psk
 EOF
-nmcli conn down WLANNAME
 nmcli conn up WLANNAME
 ```
+
+## Overall boot process
+
+ * CPU boots up one core
+ * loads internal bootloader BROM https://linux-sunxi.org/BROM
+ * look for a EGON signature 4k after device start https://linux-sunxi.org/EGON first on SD card slot, and then at the eMMC
+ * if found an EGON signature, it is loading the binary in our case U-Boot
+ * U-Boot is searching for a MBR style partition table, especially it searches for _bootable_ partition where it tries to execute a `uboot.scr` to be executed
+ * `uboot.scr` contains the code to load kernel, a DTB and maybe an initrd file and boots it
+
+ The uboot used in Xiegus image oder R1CBU is able to detect where it has been booted from. The UBoot environment contains a variable `devnum` set to
+ * 0 if booted from the SD card slot
+ * 1 if booted from the internal eMMC
+
+ That way it is sufficent to dump the first ca 640k of the update or use the official UBoot image from `/usr/share/emmc_sources/u-boot-sunxi-with-spl.bin` as bootloader
+ for images build.
+
+ Q: the siuze for the UBoot is not yet exactly known, but could be determined by the EGON header. (TODO)
 
 # Plans
 
