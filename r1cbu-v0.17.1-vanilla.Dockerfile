@@ -1,7 +1,8 @@
 # (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 FROM x6100:R1CBU-v0.17.1.sdcard
 
-RUN set -ex ;\
+RUN set -e ;\
+  : set -x ;\
   mv /target /target.old ;\
   mv /target.old/part2 /target ;\
   cp -a /target.old/part1/* /target/boot ;\
