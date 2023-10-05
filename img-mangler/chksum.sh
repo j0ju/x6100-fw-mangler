@@ -26,4 +26,5 @@ if ! ./bin/D6100 "$TYPE"sum -c "$CHKSUMFILE"; then
   echo "E: checksum for $FILE does not match."
   echo "E: Expected $CHKSUM $TYPE."
   echo "E: It was   $chksum"
+  exit 1
 fi >&2

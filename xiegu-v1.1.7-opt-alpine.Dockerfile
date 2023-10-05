@@ -1,10 +1,20 @@
 # (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
-FROM x6100:Opt.Alpine.3.18 AS opt-alpine
-FROM x6100:xiegu-v1.1.7-vanilla
 
+# set base, copy scripts & out-of-tree resources
+FROM x6100:Opt.Alpine.3.18      AS opt-alpine
+
+FROM x6100:xiegu-v1.1.7-vanilla
+COPY xiegu.mods/opt-alpine.Dockerfile/ /src/xiegu.mods/opt-alpine.Dockerfile
 COPY --from=opt-alpine /tarballs /tarballs
-RUN set -ex ;\
-  for p in /tarballs/*.tar.gz; do \
-    [ -r "$p" ] || continue ;\
-    tar xzf "$p" -C /target ;\
-  done
+
+# set environment - all build containers inherit this
+#ENV - none -
+
+# run scripts that do the modifications steps in one layer
+# * moving files around - see # copy scripts & outoftree resources above
+# * adding stuff, etc
+RUN set -e ;\
+    : set -x ;\
+  exec /bin/sh \
+    /src/img-mangler/docker-build-helper.sh \
+    /src/xiegu.mods/opt-alpine.Dockerfile

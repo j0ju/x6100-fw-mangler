@@ -1,6 +1,18 @@
 # (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
+
+# set base, copy scripts & out-of-tree resources
 FROM debian:bookworm-slim
 
+COPY img-mangler/docker-build-helper.sh /src/img-mangler/
+COPY img-mangler/Dockerfile/ /src/img-mangler/Dockerfile
+
+COPY img-mangler/cleanup-rootfs.sh /lib/cleanup-rootfs.sh
+
+COPY xiegu.mods/modded.Dockerfile/filesystem/etc/vim/vimrc.local /etc/vim/vimrc.local
+COPY xiegu.mods/modded.Dockerfile/filesystem/etc/mc/mc.ini /etc/mc/mc.ini
+COPY xiegu.mods/modded.Dockerfile/filesystem/root/.gitconfig /etc/gitconfig
+
+# set environment - all build containers inherit this
 ENV \
   DEBIAN_FRONTEND=noninteractive \
   DEBIAN_CHROOT=docker \
@@ -19,31 +31,11 @@ ENV \
   LC_MEASUREMENT=C.UTF-8 \
   LC_IDENTIFICATION=C.UTF-8
 
-COPY img-mangler/cleanup-rootfs.sh /lib/cleanup-rootfs.sh
-COPY xiegu.mods/filesystem/etc/vim/vimrc.local /etc/vim/vimrc.local
-COPY xiegu.mods/filesystem/etc/mc/mc.ini /etc/mc/mc.ini
-COPY xiegu.mods/filesystem/root/.gitconfig /etc/gitconfig
-
-RUN set -e; \
-    mkdir -p /target ; \
-    cp /etc/gitconfig /root/.gitconfig ;\
-    echo 'APT::Get::Update::SourceListWarnings::NonFreeFirmware "false";' > /etc/apt/apt.conf.d/no-bookworm-firmware.conf ;\
-    sed -i -e '/Components/ s/main/main non-free contrib/' /etc/apt/sources.list.d/debian.sources; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends \
-      debootstrap \
-      fdisk gdisk kpartx \
-      dosfstools e2fsprogs btrfs-progs f2fs-tools \
-      libubootenv-tool u-boot-tools \
-      unzip unrar zstd file pixz xzip cpio pigz \
-      python3-pip virtualenv \
-      qemu-user-static \
-      mc vim-nox bash-completion \
-      procps psmisc man-db \
-      git \
-      build-essential libncurses-dev \
-      rsync bc cmake bzip2 \
-      bspatch bsdiff hexer bbe \
-      ; \
-    echo 'case $- in *i*) . /etc/bash_completion ;; esac' >> /etc/bash.bashrc ;\
-    sh /lib/cleanup-rootfs.sh
+# run scripts that do the modifications steps in one layer
+# * moving files around - see # copy scripts & outoftree resources above
+# * adding stuff, etc
+RUN set -e ;\
+    : set -x ;\
+  exec /bin/sh \
+    /src/img-mangler/docker-build-helper.sh \
+    /src/img-mangler/Dockerfile

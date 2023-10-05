@@ -9,20 +9,26 @@ mkdir -p "$OUTPUT_DIR"
 BINPKG="$OUTPUT_DIR/$PKG.pkg.tar.gz"
 echo "I: build $BINPKG"
 
-FILES="$( apk info -L "$PKG" | sed -e '1 d' -e '/^$/ d' -e 's|^|/|' | tr '\n\r' ' ' )"
+FILES="$( 
+  apk info --no-cache --no-network -q -L "$PKG" | \
+    sed -r \
+      -e '/^$/ d' \
+      -e 's|^[/]*||' \
+      -e '/[/]share[/](applications|icons)[/]/ d' \
+    # EO sed
+)"
+
 LIBS="$(
-  for EXE in $FILES; do
-    ldd "$EXE" 2> /dev/null 1>&2 || \
-      continue
-    ldd "$EXE"
+  for EXE in $(echo $FILES | grep -vE "(^usr/share/|/terminfo/)" ); do
+    ldd "$EXE" 2> /dev/null
   done | \
     grep -oE "/[-+_a-zA-Z0-9./]+" | \
     sort -u | \
     while read lib; do
-      echo $lib
+      echo ${lib#/}
       while [ -L "$lib" ]; do
         lib="$(cd "${lib%/*}"; realpath "$(readlink "$lib")")"
-        echo $lib
+        echo ${lib#/}
       done
     done | \
     sort -u
@@ -32,7 +38,7 @@ LIBS="$(
 #echo >&2 $PKG: $LIBS
 
 if [ -n "$FILES$LIBS" ]; then
-  tar czf $BINPKG $FILES $LIBS
+  tar czf $BINPKG -C / $FILES $LIBS
 fi
 
 if [ ! -s "$BINPKG" ]; then :
