@@ -1,4 +1,5 @@
 # (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
+
 FROM x6100:Opt.Alpine.3.18 AS alpine
 
   env ALPINE_BINARIES " \
@@ -12,12 +13,13 @@ FROM x6100:Opt.Alpine.3.18 AS alpine
   "
 
   # create tarballs from binaries
-  RUN set -ex ; \
-    : --- dump of tarballs ;\
-      rm -rf /tarballs ;\
-      mkdir /tarballs ;\
+  RUN set -e; \
+    : set -x; \
+    : --- dump of tarballs ; \
+      rm -rf /tarballs ; \
+      mkdir /tarballs ; \
       for BIN in $ALPINE_BINARIES; do \
-        sh -e /alpine-mk-bin-tarball.sh $BIN /tarballs; \
+        sh -e /src/img-mangler/alpine-mk-bin-tarball.sh $BIN /tarballs; \
       done; \
   : # eo RUN
 
@@ -26,7 +28,8 @@ FROM x6100:img-mangler
   COPY multiboot /tmp/mods
 
   COPY --from=alpine /tarballs /tarballs
-  RUN set -ex ;\
+  RUN set -e; \
+    : set -x; \
     mkdir \
       /target/proc \
       /target/etc \

@@ -1,6 +1,6 @@
 # (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
-FROM x6100:xiegu-v1.1.7-vanilla AS xiegu
 
+FROM x6100:xiegu-v1.1.7-vanilla AS xiegu
 FROM x6100:r1cbu-v0.17.1-vanilla AS r1cbu
 
 FROM x6100:multiboot
@@ -8,7 +8,8 @@ FROM x6100:multiboot
   COPY --from=xiegu /target /target/Xiegu
   COPY --from=r1cbu /target /target/R1CBU
 
-  RUN set -ex ;\
+  RUN set -e ;\
+    : set -x ;\
     cd /target ;\
     ln -s Xiegu Default ;\
     ln -s R1CBU Button1 ;\
