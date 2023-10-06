@@ -1,0 +1,46 @@
+# - shell environment file for run-parts scripts in this directory
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
+
+REQ_PKGS=" \
+  sed file \
+  multipath-tools \
+  sfdisk \
+  blkid \
+  git \
+"
+
+BINPKGS=" \
+  mkimage \
+  ss \
+  nsenter unshare \
+  sfdisk \
+  find \
+"
+#  kpartx \
+
+PKGS=" \
+  ncurses ncurses-terminfo ncurses-terminfo-base \
+  wavemon htop procps psmisc usbutils hwids-usb \
+  e2fsprogs e2fsprogs-extra \
+  file libmagic \
+  vim vim-common lua5.4 \
+  mc \
+  curl wget \
+  git \
+  xxd xz zstd \
+  pv \
+  strace lsof \
+  coreutils \
+  tmux screen minicom \
+  linuxconsoletools \
+  jq \
+  rsync \
+  wipefs \
+  bash-completion iproute2-bash-completion procs-bash-completion util-linux-bash-completion mtr-bash-completion \
+  etckeeper \
+  iproute2 \
+  mtr tcpdump \
+  sed \
+  u-boot-tools \
+  partx \
+"

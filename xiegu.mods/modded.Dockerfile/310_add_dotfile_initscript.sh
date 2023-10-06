@@ -11,3 +11,6 @@ echo "I: set home to /tmp and care about dot-files on bootup"
   echo "cp -a /root/.[a-zA-Z0-9]* /tmp 2> /dev/null" >> /target/etc/init.d/root-dotfiles
   chmod 0755 /target/etc/init.d/root-dotfiles 
   ln -s ../init.d/root-dotfiles /target/etc/rc.d/S99root-dotfiles
+
+chroot /target \
+  etckeeper commit -m "init: move home of root to /tmp"

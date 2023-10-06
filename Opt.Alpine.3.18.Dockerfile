@@ -32,6 +32,6 @@ RUN set -e ;\
     : set -x ;\
   for f in /src/Opt.Alpine.3.18.Dockerfile.d/[0-9]*.*; do \
     [ -x "$f" ] || continue ;\
-    echo "I: executing $f" ;\
+    echo "executing $f" >&2;\
     "$f" ;\
   done

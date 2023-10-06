@@ -10,3 +10,6 @@ echo "I: disable services"
   mv \
     S70vsftpd S59snmpd S46ofono S48sntp S49ntp \
     disabled
+
+chroot /target \
+  etckeeper commit -m "init: disable services"

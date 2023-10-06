@@ -8,6 +8,7 @@ echo "I: remove GPIB IEEE488 development leftovers from Xiegu"
   grep gpib /target//etc/udev/rules.d/*.rules -l | xargs rm -f
   rm -rf \
     /target/usr/share/linux-gpib-user \
+    /target/etc/*gpib* \
   # EO rm -rf
 
 echo "I: cleanup"

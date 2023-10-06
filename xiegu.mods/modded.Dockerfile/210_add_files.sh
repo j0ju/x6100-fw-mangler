@@ -12,3 +12,6 @@ echo "I: add fs modifications"
       mv "$f" "/target/$f"
     done
   chroot /target /usr/local/sbin/update-rc
+
+chroot /target \
+  etckeeper commit -m "add filesystem mods"

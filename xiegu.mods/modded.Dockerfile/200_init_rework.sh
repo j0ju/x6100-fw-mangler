@@ -17,3 +17,6 @@ echo "I: rework init system, to have it more SysV"
     ln -s "../init.d/${initd}" "../rc.d/${rcd}"
   done
   sed -i -e 's|init.d|rc.d|' rcS rcK
+
+chroot /target \
+  etckeeper commit -m "rework init system, to have it more SysV-alike"

@@ -6,3 +6,6 @@ PS4='> ${0##*/}: '
 
 echo "I: set new default password"
   ( echo "x6100"; echo "x6100"; echo ) | chroot /target passwd root
+
+chroot /target \
+  etckeeper commit -m "root: change password"

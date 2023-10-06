@@ -14,10 +14,13 @@ PS4='> ${0##*/}: '
     http://archive.debian.org/debian-archive/debian/pool/main/n/ncurses/libtinfo5_5.9+20140913-1+deb8u3_armhf.deb \
     http://archive.debian.org/debian-archive/debian/pool/main/h/hexer/hexer_1.0.3-1_armhf.deb \
   # EO wget  
+
+  DEBS=
+
   for deb in *.deb; do
     dir="${deb%%_*}"
     echo "I: adding $deb"
-    dpkg-deb -x "$deb" "${deb%%_*}"
+    dpkg-deb -x "$deb" "${dir}"
     rm -rf "$dir/usr/share"
     if [ -d  "$dir"/lib/arm-linux-gnueabihf ]; then
       mv "$dir"/lib/arm-linux-gnueabihf/* "$dir"/usr/lib
@@ -28,4 +31,12 @@ PS4='> ${0##*/}: '
       rmdir "$dir"/usr/lib/arm-linux-gnueabihf
     fi
     tar cf - -C "$dir" . | tar xf - -C /target
+    DEBS="$DEBS, $dir"
   done
+
+# handle etckeeper and mdified configs
+  cd /target/etc
+  if git status --short | grep ^ > /dev/null; then
+    chroot /target \
+      etckeeper commit -m "add light weight debian packages: $DEBS"
+  fi
