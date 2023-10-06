@@ -5,12 +5,21 @@ set -e
 BIN="$1"
 OUTPUT_DIR="$2"
 
-PREFIX="${BIN#*:}"
-BIN="${BIN#:$PREFIX}"
-mkdir -p "$OUTPUT_DIR"
-BINPKG="$OUTPUT_DIR/$BIN.bin.tar.gz"
-echo "I: build $BINPKG"
+NEW_PATH="${BIN#*:}"
+BIN="${BIN%:$NEW_PATH}"
+[ ! "$NEW_PATH" = "$BIN" ] || \
+  NEW_PATH=
+if [ -n "$NEW_PATH" ]; then
+  mkdir -p "${NEW_PATH%/*}"
+  ln "$BIN" "$NEW_PATH"
+  BIN=$NEW_PATH
+fi
+
 EXE="$(which "$BIN")"
+BINPKG="$OUTPUT_DIR/$(echo -n "${EXE#/}" | tr '/:' '_' ).bin.tar.gz"
+
+mkdir -p "$OUTPUT_DIR"
+echo "I: build $BINPKG"
 FILES="${EXE#/}"
 LIBS="$( \
   ldd "$EXE" 2> /dev/null 2>/dev/null |
@@ -29,4 +38,5 @@ tar czf $BINPKG -C / $FILES $LIBS
 if [ ! -s "$BINPKG" ]; then :
   echo "W: $BINPKG is empty, removing" >&2
   rm -f "$BINPKG"
+  exit 1
 fi

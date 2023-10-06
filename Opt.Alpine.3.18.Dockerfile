@@ -29,9 +29,10 @@ ENV OUTPUT_DIR=/tarballs
 # * moving files around - see # copy scripts & outoftree resources above
 # * adding stuff, etc
 RUN set -e ;\
-    : set -x ;\
   for f in /src/Opt.Alpine.3.18.Dockerfile.d/[0-9]*.*; do \
     [ -x "$f" ] || continue ;\
     echo "executing $f" >&2;\
     "$f" ;\
   done
+
+CMD /bin/bash

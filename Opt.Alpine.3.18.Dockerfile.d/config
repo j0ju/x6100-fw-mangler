@@ -10,6 +10,7 @@ REQ_PKGS=" \
 "
 
 BINPKGS=" \
+  /bin/busybox:/opt/alpine/bin/busybox
   mkimage \
   ss \
   nsenter unshare \
