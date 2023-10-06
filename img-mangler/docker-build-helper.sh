@@ -10,6 +10,5 @@ if [ ! -d "$1" ]; then
   exit 1
 fi
 
-set -x
 exec run-parts \
   --exit-on-error -v --umask 022 --regex "[-_.0-9a-z]+" -- "$1"

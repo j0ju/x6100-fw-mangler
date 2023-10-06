@@ -36,6 +36,7 @@ binfmt_register_arm() {
     # register arm helper, if not already registered, as the name qemu-arm is a standard used, it should do nothing if already registered
     echo ":qemu-$family:M::$magic:$mask:${qemu}:$flags" | \
       nsenter -at 1 -- /bin/sh -e -c "cd /proc/sys/fs/binfmt_misc; [ -f qemu-$family ] || cat > register"
+    echo "${0##*/}: register qemu-$family"
   fi
 }
 

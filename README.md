@@ -31,7 +31,8 @@
 
 # Requirements
  * Docker
- * `qemu-user-static` with a proper `binfmt` config, although if not available un your platform there is a small helper in the tools section.
+ * `qemu-user-static` with a proper `binfmt` config, although if not available un your platform there is a small helper
+   in the tools and troubleshooting ection.
 
 ## OSX
  Rancher Desktop or Docker Desktop fulfill this requirements.
@@ -52,6 +53,7 @@
  * `make` - generates all Docker images
  * `make url` - Downloads all SDCard and update images
  * `make clean` - cleans up the directory
+ * `make binfmt` - helper to run binaries of foreign architectures - see tools and troubleshooting sections below.
 
 ### Images
 
@@ -61,7 +63,6 @@
  * `r1cbu-v0.17.1-modded` - alternative of R1CBU, rootfs extended
  * `multiboot-vanilla` - boots per default v1.1.7-vanilla, If you keep the left-most-button pressed until you see a changed boot logo of the R1CBU firmware to boot it.
  * `multiboot-modded` - boots per default v1.1.7-modded, If you keep the left-most-button pressed until you see a changed boot logo of the R1CBU firmware to boot it.
-
 
 #### tl:dr Workflow
 
@@ -87,6 +88,8 @@
  * disable automounting of random USB or MMC hotplug devices for now
  * enable bash as standard shell
  * add serial console helpers to copy with different sized terminal emulator, no more 80x24 if your terminal app behaves
+ * `etckeeper` for your local modifications to `/etc`
+ * SQLite config/data file moved `/etc/xgradio` to be included in etckeeper, for easier backup of full config
 
  Disabled for now:
  * patch https://github.com/busysteve/X6100-Bluetooth-Audio
@@ -107,9 +110,18 @@
  The modified contents then could be used to generate update images or images to be run from sdcard.
  With binfmt under Linux with docker you can even enter the Image as it would run on the x6100, of course without a GUI.
 
-### Debugging
+### Debugging & Troubleshooting
 
- `make V=1`
+ * the full output of `make V=1` might be handy, in case of errors
+
+ Q: You get errors like `exec format error` or an `/bin/sh: command not found` in the full output.
+ A: Your host is not capable running code from architecture `armhf` nativly. This tooling
+    allows to use software emulation with `qemu-user` and the kernel `binfmt` support to
+    run binaries for foreign `armhf` architecture.
+ * Debian and Ubuntu: the package `qemu-user-binfmt` does the trick. RTFM of your distrubtion.
+ * OSX (aarch64/M1/M2): with Docker Desktop or Rancher Desktop: `make binfmt` might help, by modifying
+   your setup temporarily to enable this feature.
+ * `make binfmt` should generally work on Linux host with `binfmt` support in kernel, but it might have side effects.
 
 # Tools
 
