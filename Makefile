@@ -86,14 +86,21 @@ uboot.img: Xiegu-1.1.7.1.update.uboot.img
 
 #--- extend clean-local target
 clean-local: clean-volumes
+	$(E) "CLEAN LOCAL FILES"
 	$(Q) rm -f *.zst *.img *.rar *.zip *.tar
 
 clean-volumes:
+	$(E) "CLEAN DOCKER VOLUMES"
 	$(Q) docker volume ls -q | grep ^"$(NAME_PFX)$(NAME)-" | while read v; do \
 		docker volume inspect "$$v" > /dev/null 2>&1 && \
 		  docker volume rm "$$v" > /dev/null; \
-		echo "DELETE VOLUME $$v" ;\
+		$(E) "DELETE VOLUME $$v" ;\
 		rm -f "$$i";\
 	done
+
+register binfmt r:
+	$(E) "REGISTER BFMT"
+	$(Q) ./bin/binfmt-helper unregister
+	$(Q) ./bin/binfmt-helper register
 
 # vim: ts=2 sw=2 noet ft=make
