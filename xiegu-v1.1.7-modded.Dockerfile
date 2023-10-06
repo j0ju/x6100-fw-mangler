@@ -2,7 +2,7 @@
 
 # set base, copy scripts & out-of-tree resources
 FROM x6100:xiegu-v1.1.7-opt-alpine
-COPY xiegu.mods/modded.Dockerfile/ /src/xiegu.mods/modded.Dockerfile
+COPY xiegu-v1.1.7-modded.Dockerfile.d/ /src/xiegu-v1.1.7-modded.Dockerfile.d
 
 # set environment - all build containers inherit this
 #ENV - none -
@@ -14,4 +14,4 @@ RUN set -e ;\
     : set -x ;\
   exec /bin/sh \
     /src/img-mangler/docker-build-helper.sh \
-    /src/xiegu.mods/modded.Dockerfile
+    /src/xiegu-v1.1.7-modded.Dockerfile.d

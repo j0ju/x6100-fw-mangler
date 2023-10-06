@@ -4,7 +4,7 @@
 FROM x6100:Opt.Alpine.3.18      AS opt-alpine
 
 FROM x6100:xiegu-v1.1.7-vanilla
-COPY xiegu.mods/opt-alpine.Dockerfile/ /src/xiegu.mods/opt-alpine.Dockerfile
+COPY xiegu-v1.1.7-opt-alpine.Dockerfile.d/ /src/xiegu-v1.1.7-opt-alpine.Dockerfile.d/
 COPY --from=opt-alpine /tarballs /tarballs
 
 # set environment - all build containers inherit this
@@ -17,4 +17,4 @@ RUN set -e ;\
     : set -x ;\
   exec /bin/sh \
     /src/img-mangler/docker-build-helper.sh \
-    /src/xiegu.mods/opt-alpine.Dockerfile
+    /src/xiegu-v1.1.7-opt-alpine.Dockerfile.d

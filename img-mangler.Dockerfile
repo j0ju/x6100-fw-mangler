@@ -4,13 +4,13 @@
 FROM debian:bookworm-slim
 
 COPY img-mangler/docker-build-helper.sh /src/img-mangler/
-COPY img-mangler/Dockerfile/ /src/img-mangler/Dockerfile
+COPY img-mangler.Dockerfile.d/ /src/img-mangler.Dockerfile.d
 
 COPY img-mangler/cleanup-rootfs.sh /lib/cleanup-rootfs.sh
 
-COPY xiegu.mods/modded.Dockerfile/filesystem/etc/vim/vimrc.local /etc/vim/vimrc.local
-COPY xiegu.mods/modded.Dockerfile/filesystem/etc/mc/mc.ini /etc/mc/mc.ini
-COPY xiegu.mods/modded.Dockerfile/filesystem/root/.gitconfig /etc/gitconfig
+COPY xiegu-v1.1.7-modded.Dockerfile.d/filesystem/etc/vim/vimrc.local /etc/vim/vimrc.local
+COPY xiegu-v1.1.7-modded.Dockerfile.d/filesystem/etc/mc/mc.ini /etc/mc/mc.ini
+COPY xiegu-v1.1.7-modded.Dockerfile.d/filesystem/root/.gitconfig /etc/gitconfig
 
 # set environment - all build containers inherit this
 ENV \
@@ -38,4 +38,4 @@ RUN set -e ;\
     : set -x ;\
   exec /bin/sh \
     /src/img-mangler/docker-build-helper.sh \
-    /src/img-mangler/Dockerfile
+    /src/img-mangler.Dockerfile.d

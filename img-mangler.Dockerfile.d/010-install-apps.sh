@@ -19,4 +19,20 @@ apt-get install -y --no-install-recommends \
   build-essential libncurses-dev \
   rsync bc cmake bzip2 \
   bspatch bsdiff hexer bbe \
+# EO apt-get install
 
+# pre-seed git config
+  git config --global init.defaultBranch main
+  git config --global user.name root
+  git config --global user.email root@
+  ( cd /etc
+    git init .
+    echo "*"    >  .gitignore
+    echo "**/*" >>  .gitignore
+    git add -f .gitignore
+    git commit -m "init" -q
+  )
+
+apt-get install -y --no-install-recommends \
+  etckeeper \
+# EO apt-get install

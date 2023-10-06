@@ -4,7 +4,7 @@
 PS4='> ${0##*/}: '
 #set -x
 
-PATCH_DIR="/src/xiegu.mods/modded.Dockerfile/x6100_ui_v100"
+PATCH_DIR="/src/xiegu-v1.1.7-modded.Dockerfile.d/x6100_ui_v100"
 
 SHA1SUM="$( sha1sum /target/usr/app_qt/x6100_ui_v100 | ( read sum _; echo $sum ))" ;\
 echo "I: patch app if we have a patch for x6100_ui_v100"
