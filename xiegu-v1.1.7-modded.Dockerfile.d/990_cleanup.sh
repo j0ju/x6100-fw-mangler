@@ -19,6 +19,7 @@ echo "I: cleanup"
     /target/linuxrc \
     /target/etc/rsyncd.conf \
     /target/etc/logrotate.d \
+    /target/etc/lvm \
     /target/etc/nginx \
     /target/mnt/emmc_* \
     /target/mnt/update \
