@@ -4,7 +4,7 @@
 PS4='> ${0##*/}: '
 #set -x
 
-echo "I: rework init system, to have it more SysV"
+echo "I: rework init system, to have it more SysV-alike"
   mkdir /target/etc/rc.d
   cd /target/etc/init.d
   for rcd in [KS][0-9][0-9]*; do

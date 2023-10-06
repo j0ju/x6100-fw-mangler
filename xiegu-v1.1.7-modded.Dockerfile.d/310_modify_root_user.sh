@@ -12,5 +12,11 @@ echo "I: set home to /tmp and care about dot-files on bootup"
   chmod 0755 /target/etc/init.d/root-dotfiles 
   ln -s ../init.d/root-dotfiles /target/etc/rc.d/S99root-dotfiles
 
+echo "I: set fixed initial password"
+  ( echo "x6100"; echo "x6100"; echo ) | chroot /target passwd root
+
+echo "I: set root shell to /bin/bash"
+  sed -i -e '/^root/ s|/bin/sh|/bin/bash|' /target/etc/passwd
+
 chroot /target \
-  etckeeper commit -m "init: move home of root to /tmp"
+  etckeeper commit -m "root@x6100: HOME=/tmp, SHELL=/bin/bash,  fixed init password"

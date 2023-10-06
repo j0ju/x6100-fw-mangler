@@ -23,3 +23,6 @@ echo "I: cleanup"
     /target/mnt/emmc_* \
     /target/mnt/update \
   # EO rm -rf
+
+chroot /target \
+  etckeeper commit -m "cleanup of obsolete files"
