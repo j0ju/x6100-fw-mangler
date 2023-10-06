@@ -84,6 +84,7 @@
 
  The modded Xiegu image includes this patches:
  * added a bluetoothd startup script from https://github.com/strijar/x6100_bt_patch
+ * patch for Audio Out via Bluetooth https://github.com/busysteve/X6100-Bluetooth-Audio
  * the GUI APP for v1.1.7.1 is colour patched - cyan text colour instead of red (thx to DB2ZW)
  * disable automounting of random USB or MMC hotplug devices for now
  * enable bash as standard shell
@@ -92,7 +93,6 @@
  * SQLite config/data file moved `/etc/xgradio` to be included in etckeeper, for easier backup of full config
 
  Disabled for now:
- * patch https://github.com/busysteve/X6100-Bluetooth-Audio
 
 ### `./config` and `./config.example`
  `./config` is a preseed for different settings:
