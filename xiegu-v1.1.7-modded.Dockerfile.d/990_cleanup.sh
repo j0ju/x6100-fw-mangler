@@ -5,7 +5,7 @@ PS4='> ${0##*/}: '
 #set -x
 
 echo "I: remove GPIB IEEE488 development leftovers from Xiegu"
-  grep gpib /target//etc/udev/rules.d/*.rules -l | xargs rm -f
+  grep gpib /target//etc/udev/rules.d/*.rules -l 2> /dev/null | xargs rm -f
   rm -rf \
     /target/usr/share/linux-gpib-user \
     /target/etc/*gpib* \

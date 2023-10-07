@@ -2,7 +2,9 @@
 
 # set base, copy scripts & out-of-tree resources
 FROM x6100:r1cbu-v0.17.1-opt-alpine
-COPY       r1cbu.mods/modded.Dockerfile/ /src/r1cbu.mods/modded.Dockerfile
+COPY       r1cbu-v0.17.1-modded.Dockerfile.d/ /src/r1cbu-v0.17.1-modded.Dockerfile.d/
+# a bit of code reuse
+COPY       xiegu-v1.1.7-modded.Dockerfile.d/  /src/xiegu-v1.1.7-modded.Dockerfile.d/
 
 # set environment - all build containers inherit this
 #ENV - none -
@@ -11,7 +13,7 @@ COPY       r1cbu.mods/modded.Dockerfile/ /src/r1cbu.mods/modded.Dockerfile
 # * moving files around - see # copy scripts & outoftree resources above
 # * adding stuff, etc
 RUN set -e ;\
-    : set -x ;\
-  exec /bin/sh \
-    /src/img-mangler/docker-build-helper.sh \
-    /src/r1cbu.mods/modded.Dockerfile
+  export \
+    SRC=/src/r1cbu-v0.17.1-modded.Dockerfile.d/ ;\
+  exec \
+    /bin/sh /src/img-mangler/docker-build-helper.sh $SRC

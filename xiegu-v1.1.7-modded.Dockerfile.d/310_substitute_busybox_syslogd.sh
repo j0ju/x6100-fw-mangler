@@ -15,3 +15,8 @@ cat > /target/etc/default/syslogd << EOF
 #SYSLOGD_ARGS=
 # see /sbin/syslogd -h for more
 EOF
+
+# handle etckeeper and mdified configs
+  cd /target/etc
+  chroot /target \
+    etckeeper commit -m "replace syslogd with busybox syslogd of alpine"
