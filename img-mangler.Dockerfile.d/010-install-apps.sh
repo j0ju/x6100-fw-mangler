@@ -11,7 +11,7 @@ apt-get install -y --no-install-recommends \
   dosfstools e2fsprogs btrfs-progs f2fs-tools \
   libubootenv-tool u-boot-tools \
   unzip unrar zstd file pixz xzip cpio pigz \
-  python3-pip virtualenv \
+  python3-pip virtualenv direnv \
   qemu-user-static \
   mc vim-nox bash-completion \
   procps psmisc man-db \
@@ -19,6 +19,7 @@ apt-get install -y --no-install-recommends \
   build-essential libncurses-dev \
   rsync bc cmake bzip2 \
   bspatch bsdiff hexer bbe \
+  strace tcpdump \
 # EO apt-get install
 
 # pre-seed git config

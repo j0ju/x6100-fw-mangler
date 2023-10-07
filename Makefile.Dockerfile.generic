@@ -59,7 +59,7 @@ clean-dep:
 	$(E) CLEAN DEP
 	$(Q) rm -f .deps/*.d
 
-force-dep: clean-dep
+force-dep fd fdep: clean-dep
 	$(E) FORCE DEP
 	$(Q) $(MAKE) dep
 

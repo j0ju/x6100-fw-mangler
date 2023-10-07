@@ -94,7 +94,7 @@ clean-volumes:
 	$(Q) docker volume ls -q | grep ^"$(NAME_PFX)$(NAME)-" | while read v; do \
 		docker volume inspect "$$v" > /dev/null 2>&1 && \
 		  docker volume rm "$$v" > /dev/null; \
-		$(E) "DELETE VOLUME $$v" ;\
+		echo "DELETE VOLUME $$v" ;\
 		rm -f "$$i";\
 	done
 
