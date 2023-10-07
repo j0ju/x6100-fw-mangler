@@ -8,7 +8,7 @@ echo "I: disable services"
   mkdir /target/etc/rc.d/disabled
   cd /target/etc/rc.d
   mv \
-    S70vsftpd S59snmpd S46ofono S48sntp S49ntp \
+    S70vsftpd S59snmpd S46ofono \
     disabled
 
 chroot /target \
