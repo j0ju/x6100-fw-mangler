@@ -89,7 +89,7 @@
  * disable automounting of random USB or MMC hotplug devices for now
  * enable bash as standard shell
  * add serial console helpers to copy with different sized terminal emulator, no more 80x24 if your terminal app behaves
- * `etckeeper` for your local modifications to `/etc`
+ * `etckeeper` for your local modifications to `/etc`, see [BackupNRestore.md]
  * SQLite config/data file moved `/etc/xgradio` to be included in etckeeper, for easier backup of full config
 
  Disabled for now:
@@ -132,6 +132,18 @@
  * `D6100` - enter the mangling docker container with the source tree mounted in /src
  * `buildroot` - enter container with prepared buildroot environment
  * `binfmt-helper` - this install qemu-user-static and some binfmt signatures to enable running arm code on your workstation for development
+
+## Buildroot
+
+You can enter a prepare container with the script `./bin/buildroot`.
+All repositories needed are cloned and prepared below `/workspace` in the container.
+The data in `/workspace` is stored in the docker volume `x6100-buildroot`.
+
+By calling the script you enter the container direct in side of the buildroot directory.
+You can start working.
+For example with `make` you can built the Vanilla R1CBU image.
+
+Below `/workspace/x6100_gui` you find the Git of the Radio App of R1BCU checked out.
 
 ## You have a fresh unknown image and wants to inspect its contents?
 
