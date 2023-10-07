@@ -4,6 +4,8 @@
 PS4='> ${0##*/}: '
 #set -x
 
+# NOTE: for persistend changes you still have /root
+
 echo "I: set home to /tmp and care about dot-files on bootup"
   sed -i -e '/^root/ s|/root|/tmp|' /target/etc/passwd
   echo "#!/bin/sh" > /target/etc/init.d/root-dotfiles
