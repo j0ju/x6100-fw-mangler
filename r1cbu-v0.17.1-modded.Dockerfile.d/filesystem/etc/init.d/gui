@@ -1,4 +1,6 @@
-tarts X6100 GUI daemon
+#!/bin/sh
+#
+# Starts X6100 GUI daemon
 #
 
 DAEMON="x6100_daemon"
