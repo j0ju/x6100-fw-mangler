@@ -37,7 +37,7 @@
   cd /workspace
   echo "GIT $PWD/x6100_gui $X6100_GIT"
   [ -d x6100_gui/.git ] || \
-    git clone $X6100_GIT
+    git clone --recurse-submodules $X6100_GIT
   cd x6100_gui
   git co local || \
     git co -b local $X6100_GITREV
