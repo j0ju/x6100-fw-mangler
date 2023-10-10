@@ -31,8 +31,7 @@
 
 # Requirements
  * Docker
- * `qemu-user-static` with a proper `binfmt` config, although if not available un your platform there is a small helper
-   in the tools and troubleshooting ection.
+ * `qemu-user-static` with a proper `binfmt` config, although if not available un your platform there is a small helper in the tools section.
 
 ## OSX
  Rancher Desktop or Docker Desktop fulfill this requirements.
@@ -41,7 +40,8 @@
 
 ## Ubuntu/Debian
  * Docker, ideally Community edition
- * build-essentials, make
+ * `build-essentials`, `make`
+ * `qemu-user-binfmt`, to execute armhf binaries in case you are on aarch64, x86_64, ...
  * ...
 
 # Usage
@@ -53,7 +53,6 @@
  * `make` - generates all Docker images
  * `make url` - Downloads all SDCard and update images
  * `make clean` - cleans up the directory
- * `make binfmt` - helper to run binaries of foreign architectures - see tools and troubleshooting sections below.
 
 ### Images
 
@@ -63,6 +62,7 @@
  * `r1cbu-v0.17.1-modded` - alternative of R1CBU, rootfs extended
  * `multiboot-vanilla` - boots per default v1.1.7-vanilla, If you keep the left-most-button pressed until you see a changed boot logo of the R1CBU firmware to boot it.
  * `multiboot-modded` - boots per default v1.1.7-modded, If you keep the left-most-button pressed until you see a changed boot logo of the R1CBU firmware to boot it.
+
 
 #### tl:dr Workflow
 
@@ -84,15 +84,13 @@
 
  The modded Xiegu image includes this patches:
  * added a bluetoothd startup script from https://github.com/strijar/x6100_bt_patch
- * patch for Audio Out via Bluetooth https://github.com/busysteve/X6100-Bluetooth-Audio
  * the GUI APP for v1.1.7.1 is colour patched - cyan text colour instead of red (thx to DB2ZW)
  * disable automounting of random USB or MMC hotplug devices for now
  * enable bash as standard shell
  * add serial console helpers to copy with different sized terminal emulator, no more 80x24 if your terminal app behaves
- * `etckeeper` for your local modifications to `/etc`, see [BackupNRestore.md]
- * SQLite config/data file moved `/etc/xgradio` to be included in etckeeper, for easier backup of full config
 
  Disabled for now:
+ * patch https://github.com/busysteve/X6100-Bluetooth-Audio
 
 ### `./config` and `./config.example`
  `./config` is a preseed for different settings:
@@ -110,18 +108,9 @@
  The modified contents then could be used to generate update images or images to be run from sdcard.
  With binfmt under Linux with docker you can even enter the Image as it would run on the x6100, of course without a GUI.
 
-### Debugging & Troubleshooting
+### Debugging
 
- * the full output of `make V=1` might be handy, in case of errors
-
- Q: You get errors like `exec format error` or an `/bin/sh: command not found` in the full output.
- A: Your host is not capable running code from architecture `armhf` nativly. This tooling
-    allows to use software emulation with `qemu-user` and the kernel `binfmt` support to
-    run binaries for foreign `armhf` architecture.
- * Debian and Ubuntu: the package `qemu-user-binfmt` does the trick. RTFM of your distrubtion.
- * OSX (aarch64/M1/M2): with Docker Desktop or Rancher Desktop: `make binfmt` might help, by modifying
-   your setup temporarily to enable this feature.
- * `make binfmt` should generally work on Linux host with `binfmt` support in kernel, but it might have side effects.
+ `make V=1`
 
 # Tools
 
@@ -132,18 +121,6 @@
  * `D6100` - enter the mangling docker container with the source tree mounted in /src
  * `buildroot` - enter container with prepared buildroot environment
  * `binfmt-helper` - this install qemu-user-static and some binfmt signatures to enable running arm code on your workstation for development
-
-## Buildroot
-
-You can enter a prepare container with the script `./bin/buildroot`.
-All repositories needed are cloned and prepared below `/workspace` in the container.
-The data in `/workspace` is stored in the docker volume `x6100-buildroot`.
-
-By calling the script you enter the container direct in side of the buildroot directory.
-You can start working.
-For example with `make` you can built the Vanilla R1CBU image.
-
-Below `/workspace/x6100_gui` you find the Git of the Radio App of R1BCU checked out.
 
 ## You have a fresh unknown image and wants to inspect its contents?
 
