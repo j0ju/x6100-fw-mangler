@@ -37,6 +37,7 @@ for dev in $DEVS; do
   mkdir -p "/mnt/part$part_no"
   mount -r "/dev/mapper/$dev" "/mnt/part$part_no"
 done
+fdisk -l "/dev/${dev%p[0-9]}" > /mnt/fdisk.lst
 
 if [ -z "$COMPRESSOR" ]; then
   COMPRESSOR="zstd"
