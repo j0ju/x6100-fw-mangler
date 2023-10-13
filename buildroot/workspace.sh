@@ -30,7 +30,7 @@
   echo "GIT $PWD/AetherX6100Buildroot/buildroot $BUILDROOT_GIT"
   cd buildroot
   [ -d .git ] || \
-    git clone $BUILDROOT_GIT .
+    git clone --recurse-submodules $BUILDROOT_GIT .
   git co local || \
     git co -b local $BUILDROOT_GITREV
 
