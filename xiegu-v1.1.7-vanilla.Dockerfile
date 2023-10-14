@@ -2,7 +2,7 @@
 
 # set base, copy scripts & out-of-tree resources
 FROM x6100:Xiegu-1.1.7.1.update
-COPY xiegu-v1.1.7-vanilla.Dockerfile.d/ ;/src/xiegu-v1.1.7-vanilla.Dockerfile.d/
+COPY xiegu-v1.1.7-vanilla.Dockerfile.d/ /src/xiegu-v1.1.7-vanilla.Dockerfile.d/
 
 # set environment - all build containers inherit this
 # - ENV - none

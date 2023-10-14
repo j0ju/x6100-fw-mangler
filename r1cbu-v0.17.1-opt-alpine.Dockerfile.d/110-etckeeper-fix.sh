@@ -32,7 +32,7 @@ getent() {
       grep ^$2: /etc/passwd
       ;;
     * )
-      echo "E: no getent, mochup  for missing getent failed."
+      echo "E: mock up for missing getent binary failed."
       echo "E: patch for getent failed"
       exit 1
       ;;
