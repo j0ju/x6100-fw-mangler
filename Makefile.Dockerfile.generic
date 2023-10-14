@@ -65,7 +65,7 @@ force-dep fd fdep: clean-dep
 
 clean: clean-files docker-image-prune clean-local
 
-mrproper: clean-files docker-image-clean docker-image-prune clean-local
+mrproper: clean-files docker-image-clean docker-image-prune mrproper-local
 	$(E) MRPROPER
 	$(Q) rm -rf $(DEPDIR) $(WORK_FILES) $(URL_FILES)
 

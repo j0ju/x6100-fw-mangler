@@ -85,11 +85,13 @@ uboot.img: Xiegu-1.1.7.1.update.uboot.img
 	$(Q) ./bin/D6100 -v $(NAME_PFX)$(NAME)-buildroot:/workspace sh $< > $@
 
 #--- extend clean-local target
-clean-local: clean-volumes
+clean-local:
 	$(E) "CLEAN LOCAL FILES"
 	$(Q) rm -f *.zst *.img *.rar *.zip *.tar
 
-clean-volumes:
+mrproper-local: mrproper-volumes
+
+mrproper-volumes:
 	$(E) "CLEAN DOCKER VOLUMES"
 	$(Q) docker volume ls -q | grep ^"$(NAME_PFX)$(NAME)-" | while read v; do \
 		docker volume inspect "$$v" > /dev/null 2>&1 && \
@@ -102,5 +104,8 @@ register binfmt r:
 	$(E) "REGISTER BFMT"
 	$(Q) ./bin/binfmt-helper unregister
 	$(Q) ./bin/binfmt-helper register
+
+
+buildroot: .deps/buildroot.built .deps/buildroot.volume
 
 # vim: ts=2 sw=2 noet ft=make
