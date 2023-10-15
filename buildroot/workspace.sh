@@ -5,11 +5,6 @@
   set -e
   #set -x
 
-  BUILDROOT_GIT=https://github.com/buildroot/buildroot.git
-  #BUILDROOT_GITREV=tags/2022.11.3
-  #BUILDROOT_GITREV=tags/2023.02.3
-  BUILDROOT_GITREV=tags/2023.05.1
-
   X6100_BR_GIT=https://github.com/strijar/AetherX6100Buildroot.git
   X6100_BR_GITREV=remotes/origin/R1CBU
 
@@ -22,17 +17,10 @@
 
   echo "GIT $PWD/AetherX6100Buildroot $X6100_BR_GIT"
   [ -d AetherX6100Buildroot/.git ] || \
-    git clone $X6100_BR_GIT
+    git clone -b R1CBU --recurse-submodules $X6100_BR_GIT
   cd AetherX6100Buildroot
   git co local || \
     git co -b local $X6100_BR_GITREV
-
-  echo "GIT $PWD/AetherX6100Buildroot/buildroot $BUILDROOT_GIT"
-  cd buildroot
-  [ -d .git ] || \
-    git clone --recurse-submodules $BUILDROOT_GIT .
-  git co local || \
-    git co -b local $BUILDROOT_GITREV
 
   cd /workspace
   echo "GIT $PWD/x6100_gui $X6100_GIT"
