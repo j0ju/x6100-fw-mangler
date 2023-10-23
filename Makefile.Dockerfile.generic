@@ -22,7 +22,7 @@ URL_DEPS := $(URL_FILES:%=$(DEPDIR)/%.d)
 
 WORK_FILES :=
 
-VER = $(shell echo "$$(git show -s --format=%cI HEAD | grep -o ^....-..-..T..:.. | tr -d ':-' | tr 'T' '-')$$(git status -s | grep ^ > /dev/null && echo -dirty)" )
+#VER = $(shell echo "$$(git show -s --format=%cI HEAD | grep -o ^....-..-..T..:.. | tr -d ':-' | tr 'T' '-')$$(git status -s | grep ^ > /dev/null && echo -dirty)" )
 
 V = 0
 E = @ :
