@@ -83,14 +83,12 @@
 #### Patches
 
  The modded Xiegu image includes this patches:
- * added a bluetoothd startup script from https://github.com/strijar/x6100_bt_patch
+ * added a bluetoothd startup script from https://github.com/strijar/x6100_bt_patch, to allow easier pairing from the command line
+ * patch https://github.com/busysteve/X6100-Bluetooth-Audio
  * the GUI APP for v1.1.7.1 is colour patched - cyan text colour instead of red (thx to DB2ZW)
  * disable automounting of random USB or MMC hotplug devices for now
  * enable bash as standard shell
  * add serial console helpers to copy with different sized terminal emulator, no more 80x24 if your terminal app behaves
-
- Disabled for now:
- * patch https://github.com/busysteve/X6100-Bluetooth-Audio
 
 ### `./config` and `./config.example`
  `./config` is a preseed for different settings:
@@ -165,7 +163,18 @@ nmcli conn up WLANNAME
 
  Q: the siuze for the UBoot is not yet exactly known, but could be determined by the EGON header. (TODO)
 
-# Plans
+## Boot counter since official Xiegu 1.1.7
+
+Since 1.1.7 the radio app of Xiegu stores the number of starts in `/etc/xgradio/man.conf`
+The `exec-counter` is incremented on every start of the radio app.
+
+```
+[root@x6100:~]# cat /etc/xgradio/man.conf
+[manufacture]
+exec-counter=23
+```
+
+# Ideas & Plans
 
  * provide further settings and channels for the Xiegu original app
  * provide further settings and channels for the R1CBU app
