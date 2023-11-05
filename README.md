@@ -136,7 +136,7 @@ How to connect to a WiFi via the serial console:
 nmcli device wifi con WLANNAME password XXXXXXXXX
 ```
 
-The X6100 is found to have issues with WPA3 personal (SAE) in some environments. This can be disabled Und für diejenigen welchen WPA3 nicht geht, auf WPA2 umschalten:
+The X6100 is found to have issues with WPA3 personal (SAE) in some environments. This can be disabled to fallback to WPA2 only:
 ```
 nmcli conn down WLANNAME
 nmcli conn edit WLANNAME << EOF
@@ -162,6 +162,22 @@ nmcli conn up WLANNAME
  for images build.
 
  Q: the siuze for the UBoot is not yet exactly known, but could be determined by the EGON header. (TODO)
+
+## Frequency extension / MARS mod
+
+Xiegu's official firmware can be configured to enable TX on all frequencies and bands, also those not be in the HAM bands.
+It is unknown if the filter circuits in the device itself are taking harm, so this is a modification on your own risk.
+
+The file `/etc/xgradio/xgradio.conf` needs to be edited. In case of the version 1.1.7 firmware it looks like this:
+```
+[mods]
+fullband-tx=disable
+```
+If you edit this with you favorite editor, you can chose for the `fullband-tx` setting
+ * `disable` - factory default - only TX on HM bands
+ * `enable` - enable TX on all frequencies the TRX supports.
+
+Restart the TRX (or just the radio app) afterwards.
 
 ## Boot counter since official Xiegu 1.1.7
 
