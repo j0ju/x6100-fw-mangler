@@ -76,7 +76,7 @@ cleanup() {
   trap '' EXIT
   exit $rs
 }
-trap cleanup EXIT TERM HUP INT USR1 USR2 STOP CONT
+trap cleanup EXIT TERM HUP INT USR1 USR2
 DEVS="$(kpartx -av "$IMAGE" | grep -oE 'loop[^ ]+' | sort -u)"
 
 P2="$(echo $DEVS | grep -E -o "[^ ]+p2")"

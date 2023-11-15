@@ -28,7 +28,7 @@ cleanup() {
   exit $rs
 }
 
-trap cleanup EXIT TERM HUP INT USR1 USR2 STOP CONT
+trap cleanup EXIT TERM HUP INT USR1 USR2
 
 # generate block devices from image file
 DEVS="$(kpartx -rav "$IMAGE" | grep -oE 'loop[^ ]+' | sort -u)"
