@@ -11,6 +11,7 @@ REQ_PKGS=" \
 
 BINPKGS=" \
   /bin/busybox:/opt/alpine/bin/busybox
+  /usr/bin/ldd:/opt/alpine/bin/ldd
   mkimage \
   ss \
   nsenter unshare \
@@ -44,4 +45,5 @@ PKGS=" \
   sed \
   u-boot-tools \
   partx \
+  rsyslog \
 "

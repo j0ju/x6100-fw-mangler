@@ -20,7 +20,7 @@ FILES="$(
 
 LIBS="$(
   for EXE in $(echo $FILES | grep -vE "(^usr/share/|/terminfo/)" ); do
-    ldd "$EXE" 2> /dev/null
+    ldd "/${EXE#/}" 2> /dev/null
   done | \
     grep -oE "/[-+_a-zA-Z0-9./]+" | \
     sort -u | \
