@@ -7,7 +7,6 @@ config
 *.img.gz
 *.img.xz
 *.tar
-*.tar.gz
 *.tgz
 *.tar.xz
 *.zip

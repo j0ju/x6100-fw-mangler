@@ -2,7 +2,9 @@
 
 # set base, copy scripts & out-of-tree resources
 FROM x6100:R1CBU-v0.20.0.sdcard
-COPY r1cbu-v0.20.0-vanilla.Dockerfile.d/ /src/r1cbu-v0.20.0-vanilla.Dockerfile.d/
+COPY r1cbu-v0.20.1-vanilla.Dockerfile.d/ /src/r1cbu-v0.20.1-vanilla.Dockerfile.d/
+
+COPY R1CBU-v0.20.1.patch.tar.gz /tmp
 
 # set environment - all build containers inherit this
 #ENV - none -
@@ -13,6 +15,6 @@ CMD rm -f /target/etc/resolv.conf; cp /etc/resolv.conf /target/etc/resolv.conf; 
 # * adding stuff, etc
 RUN set -e ;\
   export \
-    SRC=/src/r1cbu-v0.20.0-vanilla.Dockerfile.d/ ;\
+    SRC=/src/r1cbu-v0.20.1-vanilla.Dockerfile.d/ ;\
   exec \
     /bin/sh /src/img-mangler/docker-build-helper.sh $SRC

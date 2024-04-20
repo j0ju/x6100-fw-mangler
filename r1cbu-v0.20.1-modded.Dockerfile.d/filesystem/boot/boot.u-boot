@@ -1,0 +1,12 @@
+# UBoot boot script for X6100
+# (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
+
+setenv rootdev PARTUUID=
+
+echo setenv bootargs console=ttyS0,115200 root=${rootdev} rootwait panic=10 fbcon=rotate:3 video=VGA:480x800
+setenv bootargs console=ttyS0,115200 root=${rootdev} rootwait panic=10 fbcon=rotate:3 video=VGA:480x800
+echo ext4load mmc $devnum:2 0x46000000 /boot/zImage
+ext4load mmc $devnum:2 0x46000000 /boot/zImage
+echo ext4load mmc $devnum:2 0x49000000 /boot/${fdtfile}
+ext4load mmc $devnum:2 0x49000000 /boot/${fdtfile}
+bootz 0x46000000 - 0x49000000
