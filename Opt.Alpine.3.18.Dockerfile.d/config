@@ -46,5 +46,7 @@ PKGS=" \
   u-boot-tools \
   partx \
   rsyslog \
-  sntpc
+  sntpc \
+  dtc \
+  make
 "
