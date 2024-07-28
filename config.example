@@ -3,16 +3,14 @@
 # config for ../docker-images/Makefile.Dockerfile.generic
 
 #DOCKER_IMAGES :=
-#DOCKER_IMAGES += v1.1.7-modded
+#DOCKER_IMAGES += xiegu-v1.1.7-modded
 #DOCKER_IMAGES += r1cbu-v0.17.1-modded
 
 #WORK_FILES :=
-#WORK_FILES += v1.1.7-modded.sdcard.img
-#WORK_FILES += v1.1.7-modded.update.img
-#WORK_FILES += r1cbu-v0.17.1-modded.sdcard.img
-#WORK_FILES += r1cbu-v0.17.1-modded.update.img
-#WORK_FILES += r1cbu-v0.18.0-vanilla.sdcard.img
-#WORK_FILES += r1cbu-v0.18.0-modded.sdcard.img
+#WORK_FILES += xiegu-v1.1.7-modded.sdcard.img
+#WORK_FILES += xiegu-v1.1.7-modded.update.img
+#WORK_FILES += r1cbu-v0.20.1-vanilla.sdcard.img
+#WORK_FILES += r1cbu-v0.20.1-modded.sdcard.img
 #WORK_FILES += multiboot.sdcard.img
 #WORK_FILES += multiboot-vanilla.sdcard.img
 #WORK_FILES += multiboot-vanilla.update.img
