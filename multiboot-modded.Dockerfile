@@ -1,7 +1,7 @@
 # (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 
-FROM x6100:xiegu-v1.1.7-modded AS xiegu
-FROM x6100:r1cbu-v0.20.1-modded AS r1cbu
+FROM x6100:xiegu-v1.1.8-modded AS xiegu
+FROM x6100:r1cbu-v0.27.0-modded AS r1cbu
 
 FROM x6100:multiboot
 

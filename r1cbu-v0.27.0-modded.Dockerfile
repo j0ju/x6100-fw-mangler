@@ -1,11 +1,10 @@
 # (C) 2023 Joerg Jungermann, GPLv2 see LICENSE
 
 # set base, copy scripts & out-of-tree resources
-FROM x6100:Opt.Alpine.3.18      AS opt-alpine
-
-FROM x6100:xiegu-v1.1.7-vanilla
-COPY xiegu-v1.1.7-opt-alpine.Dockerfile.d/ /src/xiegu-v1.1.7-opt-alpine.Dockerfile.d/
-COPY --from=opt-alpine /tarballs /tarballs
+FROM x6100:r1cbu-v0.27.0-opt-alpine
+COPY       r1cbu-v0.27.0-modded.Dockerfile.d/ /src/r1cbu-v0.27.0-modded.Dockerfile.d/
+# a bit of code reuse
+COPY       xiegu-v1.1.8-modded.Dockerfile.d/  /src/xiegu-v1.1.8-modded.Dockerfile.d/
 
 # set environment - all build containers inherit this
 #ENV - none -
@@ -15,6 +14,6 @@ COPY --from=opt-alpine /tarballs /tarballs
 # * adding stuff, etc
 RUN set -e ;\
   export \
-    SRC=/src/xiegu-v1.1.7-opt-alpine.Dockerfile.d ;\
+    SRC=/src/r1cbu-v0.27.0-modded.Dockerfile.d/ ;\
   exec \
     /bin/sh /src/img-mangler/docker-build-helper.sh $SRC
