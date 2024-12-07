@@ -4,13 +4,13 @@
 
 #DOCKER_IMAGES :=
 #DOCKER_IMAGES += xiegu-v1.1.8-modded
-#DOCKER_IMAGES += r1cbu-v0.27.0-modded
+#DOCKER_IMAGES += r1cbu-v0.28.0-modded
 
 #WORK_FILES :=
 #WORK_FILES += xiegu-v1.1.8-modded.sdcard.img
 #WORK_FILES += xiegu-v1.1.8-modded.update.img
-#WORK_FILES += r1cbu-v0.27.0-vanilla.sdcard.img
-#WORK_FILES += r1cbu-v0.27.0-modded.sdcard.img
+#WORK_FILES += r1cbu-v0.28.0-vanilla.sdcard.img
+#WORK_FILES += r1cbu-v0.28.0-modded.sdcard.img
 #WORK_FILES += multiboot.sdcard.img
 #WORK_FILES += multiboot-vanilla.sdcard.img
 #WORK_FILES += multiboot-vanilla.update.img
