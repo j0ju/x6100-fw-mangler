@@ -5,7 +5,7 @@ set -e
 #---
 UPDATE=no
 ROUND_UP=1024
-MIN_FREE=59512
+MIN_FREE=512
 while [ -n "$1" ]; do
   case "$1" in
     --update )

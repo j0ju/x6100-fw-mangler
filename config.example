@@ -17,6 +17,11 @@
 #WORK_FILES += multiboot-modded.sdcard.img
 #WORK_FILES += multiboot-modded.update.img
 
+# this will result in images for 8GB images
+IMG_MIN_FREE=6144
+# this will result in images for 64GB images
+#IMG_MIN_FREE=59512
+
 # this will initially build the buildroot volume and prepare the buildroot environment
 #WORK_FILES += .deps/buildroot.built
 #buildroot: .deps/buildroot.built .deps/buildroot.volume

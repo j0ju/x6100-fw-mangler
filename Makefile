@@ -4,6 +4,8 @@
 include Makefile.Dockerfile.generic
 NAME := x6100
 
+# have images extended for 8GB images
+IMG_MIN_FREE=6144
 # allow local config overrides, like in main Makefile used above
 -include config
 
@@ -56,12 +58,12 @@ build: $(WORK_FILES)
 #--- build a SDcard bootable image
 %.sdcard.img: .deps/%.built Makefile ./img-mangler/docker-img-to-sdcard.sh uboot.img
 	$(E) "IMG $@"
-	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.sdcard.img=) sh $(SHOPT) img-mangler/docker-img-to-sdcard.sh $@
+	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.sdcard.img=) sh $(SHOPT) img-mangler/docker-img-to-sdcard.sh --min-free $(IMG_MIN_FREE) $@
 
 #--- build an update image
 %.update.img: .deps/%.built Makefile ./img-mangler/docker-img-to-sdcard.sh uboot.img
 	$(E) "IMG $@"
-	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.update.img=) sh $(SHOPT) img-mangler/docker-img-to-sdcard.sh --update $@
+	$(Q) ./bin/D6100 -p --image $(NAME_PFX)$(NAME):$(@:.update.img=) sh $(SHOPT) img-mangler/docker-img-to-sdcard.sh --update --min-free $(IMG_MIN_FREE) $@
 
 #--- extract uboot from image
 %.uboot.img: %.img
