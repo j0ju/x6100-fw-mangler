@@ -20,6 +20,7 @@ apt-get install -y --no-install-recommends \
   rsync bc cmake bzip2 \
   bspatch bsdiff hexer bbe \
   strace tcpdump \
+  sqlite3 \
 # EO apt-get install
 
 # pre-seed git config
